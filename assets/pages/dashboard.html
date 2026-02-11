@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  
+    <!-- PWA Theme (اختياري فقط) -->
+    <meta name="theme-color" content="#6B1C24">
+  
+    <meta name="description" content="نظام إدارة البطاقات والسائقين" />
+  
+    <title>لوحة التحكم | DriverSys</title>
+  
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/assets/css/dashboard.css">
+  </head>
+  <body id="dashboard-page">
+    
+    <!-- Mobile Overlay -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="logo-circle">DS</div>
+        <div>
+          <div class="brand-name">DriverSys</div>
+          <div class="brand-tagline">نظام إدارة البطاقات</div>
+        </div>
+      </div>
+
+      <ul class="nav-menu">
+        <li class="nav-item active" id="nav-cards" onclick="switchTab('cards', this)">
+          <i class="fas fa-id-card"></i>
+          <span>البطاقات</span>
+          <span class="nav-badge" id="cardsBadge">0</span>
+        </li>
+        <li class="nav-item" id="nav-users" onclick="switchTab('users', this)">
+          <i class="fas fa-users"></i>
+          <span>المستخدمين</span>
+          <span class="nav-badge" id="usersBadge">0</span>
+        </li>
+        <li class="nav-item" id="nav-settings" onclick="switchTab('settings', this)">
+          <i class="fas fa-cog"></i>
+          <span>الإعدادات</span>
+        </li>
+        <li class="nav-item external-link" onclick="window.location.href = '/assets/pages/card-template.html'">
+          <i class="fas fa-external-link-alt"></i>
+          <span>إصدار بطاقة جديدة</span>
+          <i class="fas fa-arrow-left arrow-icon"></i>
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="user-mini-profile">
+          <div class="user-mini-avatar" id="miniAvatar">A</div>
+          <div class="user-mini-info">
+            <div class="user-mini-name" id="miniName">مدير النظام</div>
+            <div class="user-mini-role" id="miniRole">مدير</div>
+          </div>
+        </div>
+        <button class="logout-btn" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>تسجيل خروج</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-wrapper">
+      <header class="top-header">
+        <div class="header-right">
+          <button class="menu-toggle" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+          </button>
+          <div class="page-title" id="pageTitle">
+            <i class="fas fa-id-card"></i>
+            سجل البطاقات
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="header-btn" onclick="showNotifications()" title="الإشعارات">
+            <i class="fas fa-bell"></i>
+            <span class="badge">3</span>
+          </button>
+        </div>
+      </header>
+
+      <main class="content-area">
+        <!-- Cards Tab -->
+        <section id="cards" class="tab-content active">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fas fa-id-card"></i>
+                سجل البطاقات
+              </div>
+              <div class="card-tools">
+                <div class="search-box">
+                  <i class="fas fa-search"></i>
+                  <input type="text" id="cardsSearch" placeholder="بحث..." onkeyup="filterCards()" />
+                </div>
+                <button class="btn btn-primary" onclick="exportCards()">
+                  <i class="fas fa-download"></i>
+                  تصدير
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="table-container">
+                <table class="data-table" id="cardsTable">
+                  <thead>
+                    <tr>
+                      <th>رقم البطاقة</th>
+                      <th>السائق</th>
+                      <th>المنشأة</th>
+                      <th>التاريخ</th>
+                      <th>الحالة</th>
+                      <th>الإجراءات</th>
+                    </tr>
+                  </thead>
+                  <tbody id="cardsTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Users Tab -->
+        <section id="users" class="tab-content">
+          <div class="card users-container">
+            <div class="card-header user-header-box">
+              <div class="card-title">
+                <i class="fas fa-users"></i>
+                إدارة المستخدمين
+              </div>
+              <button class="btn btn-primary" onclick="openAddUserModal()">
+                <i class="fas fa-plus"></i>
+                إضافة مستخدم
+              </button>
+            </div>
+            <div class="users-grid" id="usersGrid"></div>
+          </div>
+        </section>
+
+        <!-- Settings Tab -->
+        <section id="settings" class="tab-content">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fas fa-cog"></i>
+                إعدادات النظام
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="empty-state">
+                <i class="fas fa-tools"></i>
+                <p>الإعدادات قيد التطوير...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- User Modal (Add/Edit) -->
+ <!-- User Modal (Add/Edit) -->
+ <div class="modal-overlay" id="userModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="userModalTitle">إضافة مستخدم جديد</div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editUserId" />
+      <div class="input-group">
+        <label class="form-label">اسم المستخدم</label>
+        <input type="text" class="form-control" id="newUsername" placeholder="أدخل اسم المستخدم" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">كلمة المرور</label>
+        <div class="pass-input-wrapper" style="position: relative;">
+          <input type="password" class="form-control" id="newPassword" placeholder="أدخل كلمة المرور" style="padding-left: 40px;" />
+          <button type="button" class="pass-toggle" onclick="toggleModalPassVisibility()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #666;">
+            <i class="fas fa-eye" id="modalPassEye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="input-group">
+        <label class="form-label">الدور</label>
+        <select class="form-control" id="newRole">
+          <option value="admin">مدير</option>
+          <option value="user">موظف</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
+      <button class="btn btn-primary" id="saveUserBtn" onclick="saveUser()">حفظ</button>
+    </div>
+  </div>
+</div>
+
+    <script>
+      // Global App Data
+      const appData = {
+        currentUser: { name: "مدير النظام", role: "admin", avatar: "A" },
+        cards: [
+          { id: "11.00537649", driver: "عبد العلي", company: "شركة شفلوت", date: "2025-12-29", status: "active" },
+          { id: "11.00537650", driver: "محمد العلي", company: "مؤسسة النقل", date: "2025-01-15", status: "active" },
+          { id: "11.00537651", driver: "أحمد محمود", company: "شركة الاتحاد", date: "2025-01-20", status: "pending" },
+          { id: "11.00537652", driver: "خالد عمر", company: "مؤسسة السلام", date: "2024-12-01", status: "expired" }
+        ],
+        users: [
+          { id: 1, username: "Admin", password: "Admin123", role: "admin", status: "active" },
+          { id: 2, username: "User1", password: "password", role: "user", status: "active" }
+        ]
+      };
+
+      // Lifecycle
+      document.addEventListener("DOMContentLoaded", () => {
+        initPage();
+        renderCards();
+        renderUsers();
+        updateBadges();
+      });
+
+      function initPage() {
+        document.getElementById("miniName").textContent = appData.currentUser.name;
+        document.getElementById("miniAvatar").textContent = appData.currentUser.avatar;
+        document.getElementById("miniRole").textContent = appData.currentUser.role;
+      }
+
+      // Renderers
+      function renderCards() {
+        const tbody = document.getElementById("cardsTableBody");
+        if (!tbody) return;
+        tbody.innerHTML = appData.cards.map(card => `
+          <tr>
+            <td><strong>${card.id}</strong></td>
+            <td>${card.driver}</td>
+            <td>${card.company}</td>
+            <td>${card.date}</td>
+            <td>${getStatusBadge(card.status)}</td>
+            <td>
+              <div class="table-actions">
+                <button class="btn-icon" onclick="printCard('${card.id}')" title="طباعة"><i class="fas fa-print"></i></button>
+                <button class="btn-icon" onclick="editCard('${card.id}')" title="تعديل"><i class="fas fa-edit"></i></button>
+                <button class="btn-icon delete" onclick="deleteCard('${card.id}')" title="حذف"><i class="fas fa-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        `).join("");
+      }
+
+      function renderUsers() {
+        const grid = document.getElementById("usersGrid");
+        if (!grid) return;
+        grid.innerHTML = appData.users.map(user => `
+          <div class="user-card" data-id="${user.id}">
+            <div class="user-avatar">
+              ${user.username.charAt(0).toUpperCase()}
+              <div class="user-status-dot ${user.status}"></div>
+            </div>
+            <div class="user-name">${user.username}</div>
+            <div class="user-role">${user.role === "admin" ? "مدير" : "موظف"}</div>
+            <div class="user-pass-box">
+              <span class="pass-label">كلمة المرور</span>
+              <div class="pass-input-wrapper">
+                <input type="password" class="pass-input" value="${user.password}" readonly id="pass-${user.id}">
+                <button class="pass-toggle" onclick="togglePassVisibility(${user.id})">
+                  <i class="fas fa-eye" id="eye-${user.id}"></i>
+                </button>
+              </div>
+            </div>
+            <div class="user-actions">
+              <button class="btn-action btn-edit" onclick="editUser(${user.id})"><i class="fas fa-edit"></i> تعديل</button>
+              <button class="btn-action btn-delete" onclick="deleteUser(${user.id})"><i class="fas fa-trash"></i> حذف</button>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      function getStatusBadge(status) {
+        const badges = {
+          active: '<span class="badge badge-success">نشط</span>',
+          pending: '<span class="badge badge-warning">قيد الانتظار</span>',
+          expired: '<span class="badge badge-danger">منتهي</span>'
+        };
+        return badges[status] || status;
+      }
+
+      // Sidebar & Navigation
+      function toggleSidebar(force) {
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("overlay");
+        const isActive = typeof force === 'boolean' ? force : !sidebar.classList.contains("active");
+        sidebar.classList.toggle("active", isActive);
+        overlay.classList.toggle("active", isActive);
+      }
+
+      function switchTab(tabId, element) {
+        document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
+        document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
+        document.getElementById(tabId).classList.add("active");
+        if (element) element.classList.add("active");
+        const titles = { cards: "fa-id-card", users: "fa-users", settings: "fa-cog" };
+        const text = { cards: "إدارة البطاقات", users: "إدارة المستخدمين", settings: "الإعدادات" };
+        document.getElementById("pageTitle").innerHTML = `<i class="fas ${titles[tabId]}"></i> ${text[tabId]}`;
+        if (window.innerWidth <= 768) toggleSidebar(false);
+      }
+
+      // Card Actions
+      function printCard(id) { showToast("info", "طباعة", `جاري تجهيز البطاقة رقم ${id} للطباعة...`); }
+      function editCard(id) { showToast("warning", "تنبيه", "خاصية تعديل البطاقات ستتوفر قريباً في التحديث القادم."); }
+      function deleteCard(id) {
+        if (confirm("هل أنت متأكد من حذف هذه البطاقة؟")) {
+          appData.cards = appData.cards.filter(c => c.id !== id);
+          renderCards();
+          updateBadges();
+          showToast("success", "تم الحذف", "تم حذف البطاقة بنجاح");
+        }
+      }
+
+      // User Logic (Fix for the missing editUser function)
+      function openAddUserModal() {
+        document.getElementById("userModalTitle").textContent = "إضافة مستخدم جديد";
+        document.getElementById("editUserId").value = "";
+        document.getElementById("newUsername").value = "";
+        document.getElementById("newPassword").value = "";
+        document.getElementById("userModal").classList.add("active");
+      }
+
+      function editUser(userId) {
+        const user = appData.users.find(u => u.id === userId);
+        if (!user) return;
+        
+        document.getElementById("userModalTitle").textContent = "تعديل بيانات المستخدم";
+        document.getElementById("editUserId").value = user.id;
+        document.getElementById("newUsername").value = user.username;
+        document.getElementById("newPassword").value = user.password;
+        document.getElementById("newRole").value = user.role;
+        
+        document.getElementById("userModal").classList.add("active");
+      }
+
+      function saveUser() {
+        const editId = document.getElementById("editUserId").value;
+        const username = document.getElementById("newUsername").value;
+        const password = document.getElementById("newPassword").value;
+        const role = document.getElementById("newRole").value;
+
+        if (!username || !password) return showToast("error", "خطأ", "يرجى ملء كافة البيانات");
+
+        if (editId) {
+          // Update existing
+          const index = appData.users.findIndex(u => u.id == editId);
+          if (index !== -1) {
+            appData.users[index] = { ...appData.users[index], username, password, role };
+            showToast("success", "تم التحديث", "تم تحديث بيانات المستخدم بنجاح");
+          }
+        } else {
+          // Add new
+          appData.users.push({ id: Date.now(), username, password, role, status: "active" });
+          showToast("success", "تمت الإضافة", "تم إضافة المستخدم بنجاح");
+        }
+
+        renderUsers();
+        updateBadges();
+        closeModal();
+      }
+
+      function deleteUser(id) {
+        if (confirm("هل أنت متأكد من حذف هذا المستخدم؟")) {
+          appData.users = appData.users.filter(u => u.id !== id);
+          renderUsers();
+          updateBadges();
+          showToast("success", "تم الحذف", "تم حذف المستخدم بنجاح");
+        }
+      }
+
+      function closeModal() { document.getElementById("userModal").classList.remove("active"); }
+
+      // Utilities
+      function togglePassVisibility(userId) {
+        const input = document.getElementById(`pass-${userId}`);
+        const eye = document.getElementById(`eye-${userId}`);
+        const isPass = input.type === "password";
+        input.type = isPass ? "text" : "password";
+        eye.className = isPass ? "fas fa-eye-slash" : "fas fa-eye";
+      }
+      
+      function toggleModalPassVisibility() {
+        const input = document.getElementById('newPassword');
+        const eye = document.getElementById('modalPassEye');
+        const isPass = input.type === "password";
+        input.type = isPass ? "text" : "password";
+        eye.className = isPass ? "fas fa-eye-slash" : "fas fa-eye";
+      }
+      
+      function filterCards() {
+        const val = document.getElementById("cardsSearch").value.toLowerCase();
+        document.querySelectorAll("#cardsTableBody tr").forEach(row => {
+          row.style.display = row.textContent.toLowerCase().includes(val) ? "" : "none";
+        });
+      }
+
+      function updateBadges() {
+        document.getElementById("cardsBadge").textContent = appData.cards.length;
+        document.getElementById("usersBadge").textContent = appData.users.length;
+      }
+
+      function exportCards() {
+        showToast("info", "جاري التصدير", "يتم تحضير ملف البيانات...");
+        setTimeout(() => showToast("success", "تم التصدير", "تم تحميل الملف بنجاح"), 1500);
+      }
+
+      function showToast(type, title, message) {
+        const container = document.getElementById("toastContainer");
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        const icons = { success: "fa-check-circle", error: "fa-exclamation-circle", info: "fa-info-circle", warning: "fa-exclamation-triangle" };
+        toast.innerHTML = `<i class="fas ${icons[type] || 'fa-info'} toast-icon"></i>
+          <div><div class="toast-title">${title}</div><div class="toast-msg">${message}</div></div>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add("show"), 10);
+        setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 400); }, 3000);
+      }
+
+      function logout() { if (confirm("هل تريد تسجيل الخروج؟")) window.location.href = "/index.html"; }
+
+      function showNotifications() { showToast("info", "الإشعارات", "لا توجد إشعارات جديدة حالياً."); }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+    </script>
+  </body>
+</html>

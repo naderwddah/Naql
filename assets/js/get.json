@@ -1,0 +1,12 @@
+{
+  "responseData": {
+    "translatedText": "NO QUERY SPECIFIED. EXAMPLE REQUEST: GET?Q=HELLO&LANGPAIR=EN|IT"
+  },
+  "quotaFinished": null,
+  "mtLangSupported": null,
+  "responseDetails": "NO QUERY SPECIFIED. EXAMPLE REQUEST: GET?Q=HELLO&LANGPAIR=EN|IT",
+  "responseStatus": "403",
+  "responderId": null,
+  "exception_code": null,
+  "matches": ""
+}
