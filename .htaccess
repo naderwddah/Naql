@@ -1,0 +1,44 @@
+# تمكين إعادة التوجيه
+RewriteEngine On
+RewriteBase /driver_cards/
+
+RewriteCond %{HTTP:Authorization} ^(.*)
+RewriteRule .* - [e=HTTP_AUTHORIZATION:%1]
+
+# منع عرض الملفات المخفية
+RedirectMatch 403 /\..*$
+
+# منع الوصول المباشر للمجلدات الحساسة
+RedirectMatch 403 ^/(config|controllers|helpers|logs|models)/?$
+
+# منع الوصول للملفات الحساسة مباشرة
+<FilesMatch "\.(ini|log|sql)$">
+    Require all denied
+</FilesMatch>
+
+# إعادة التوجيه إلى index.php لأي مسار غير موجود
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^v1/?(.*)$ index.php?path=$1 [QSA,L]
+RewriteRule ^(.*)$ index.php?path=$1 [QSA,L]
+
+# تعيين الترميز الافتراضي
+AddDefaultCharset UTF-8
+
+# حماية headers
+Header set X-Content-Type-Options "nosniff"
+Header set X-Frame-Options "DENY"
+Header set X-XSS-Protection "1; mode=block"
+
+# ===== CORS =====
+Header always set Access-Control-Allow-Origin "*"
+Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+
+# معالجة طلبات OPTIONS (Preflight) لجميع المسارات
+#<If "%{REQUEST_METHOD} == 'OPTIONS'">
+#    Header always set Access-Control-Max-Age "86400"
+#    Require all granted
+#    RewriteEngine Off
+#    RewriteRule ^ - [R=200,L]
+#</If>
