@@ -300,7 +300,7 @@ body::before {
   background: rgba(239, 68, 68, 0.05);
   border: 1px dashed rgba(239, 68, 68, 0.3);
   color: var(--danger);
-  margin-top: auto;
+
 }
 
 .nav-item.external-link:hover {

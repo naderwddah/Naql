@@ -224,7 +224,7 @@ passwordInput.addEventListener("copy", (e) => {
   e.preventDefault();
   showMessage("warning", "تنبيه أمني", "نسخ كلمة المرور غير مسموح به");
 });
-// -----------------
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker

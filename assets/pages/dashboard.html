@@ -2,21 +2,26 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+
     <!-- PWA Theme (اختياري فقط) -->
-    <meta name="theme-color" content="#6B1C24">
-  
+    <meta name="theme-color" content="#6B1C24" />
+
     <meta name="description" content="نظام إدارة البطاقات والسائقين" />
-  
+
     <title>لوحة التحكم | DriverSys</title>
-  
+
     <!-- Fonts & Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/dashboard.css" />
   </head>
   <body id="dashboard-page">
-    
     <!-- Mobile Overlay -->
     <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
 
@@ -31,7 +36,11 @@
       </div>
 
       <ul class="nav-menu">
-        <li class="nav-item active" id="nav-cards" onclick="switchTab('cards', this)">
+        <li
+          class="nav-item active"
+          id="nav-cards"
+          onclick="switchTab('cards', this)"
+        >
           <i class="fas fa-id-card"></i>
           <span>البطاقات</span>
           <span class="nav-badge" id="cardsBadge">0</span>
@@ -41,11 +50,18 @@
           <span>المستخدمين</span>
           <span class="nav-badge" id="usersBadge">0</span>
         </li>
-        <li class="nav-item" id="nav-settings" onclick="switchTab('settings', this)">
+        <li
+          class="nav-item"
+          id="nav-settings"
+          onclick="switchTab('settings', this)"
+        >
           <i class="fas fa-cog"></i>
           <span>الإعدادات</span>
         </li>
-        <li class="nav-item external-link" onclick="window.location.href = '/assets/pages/card-template.html'">
+        <li
+          class="nav-item external-link"
+          onclick="window.location.href = '/assets/pages/card-template.html'"
+        >
           <i class="fas fa-external-link-alt"></i>
           <span>إصدار بطاقة جديدة</span>
           <i class="fas fa-arrow-left arrow-icon"></i>
@@ -81,7 +97,11 @@
         </div>
 
         <div class="header-actions">
-          <button class="header-btn" onclick="showNotifications()" title="الإشعارات">
+          <button
+            class="header-btn"
+            onclick="showNotifications()"
+            title="الإشعارات"
+          >
             <i class="fas fa-bell"></i>
             <span class="badge">3</span>
           </button>
@@ -100,7 +120,12 @@
               <div class="card-tools">
                 <div class="search-box">
                   <i class="fas fa-search"></i>
-                  <input type="text" id="cardsSearch" placeholder="بحث..." onkeyup="filterCards()" />
+                  <input
+                    type="text"
+                    id="cardsSearch"
+                    placeholder="بحث..."
+                    onkeyup="filterCards()"
+                  />
                 </div>
                 <button class="btn btn-primary" onclick="exportCards()">
                   <i class="fas fa-download"></i>
@@ -164,280 +189,923 @@
         </section>
       </main>
     </div>
-
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- User Modal (Add/Edit) -->
- <!-- User Modal (Add/Edit) -->
- <div class="modal-overlay" id="userModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="userModalTitle">إضافة مستخدم جديد</div>
-      <button class="modal-close" onclick="closeModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="editUserId" />
-      <div class="input-group">
-        <label class="form-label">اسم المستخدم</label>
-        <input type="text" class="form-control" id="newUsername" placeholder="أدخل اسم المستخدم" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">كلمة المرور</label>
-        <div class="pass-input-wrapper" style="position: relative;">
-          <input type="password" class="form-control" id="newPassword" placeholder="أدخل كلمة المرور" style="padding-left: 40px;" />
-          <button type="button" class="pass-toggle" onclick="toggleModalPassVisibility()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #666;">
-            <i class="fas fa-eye" id="modalPassEye"></i>
+    <div class="modal-overlay" id="userModal">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="userModalTitle">إضافة مستخدم جديد</div>
+          <button class="modal-close" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editUserId" />
+          <div class="input-group">
+            <label class="form-label"> اسم المستخدم الكامل</label>
+            <input
+              type="text"
+              class="form-control"
+              id="newFullName"
+              placeholder="أدخل اسم المستخدم الكامل"
+            />
+          </div>
+          <div class="input-group">
+            <label class="form-label">اسم المستخدم</label>
+            <input
+              type="text"
+              class="form-control"
+              id="newUsername"
+              placeholder="أدخل اسم المستخدم"
+            />
+          </div>
+          <div class="input-group">
+            <label class="form-label">كلمة المرور</label>
+            <div class="pass-input-wrapper" style="position: relative">
+              <input
+                type="password"
+                class="form-control"
+                id="newPassword"
+                placeholder="أدخل كلمة المرور"
+                style="padding-left: 40px"
+              />
+              <button
+                type="button"
+                class="pass-toggle"
+                onclick="toggleModalPassVisibility()"
+                style="
+                  position: absolute;
+                  left: 10px;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  background: none;
+                  border: none;
+                  cursor: pointer;
+                  color: #666;
+                "
+              >
+                <i class="fas fa-eye" id="modalPassEye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="input-group">
+            <label class="form-label">الدور</label>
+            <select class="form-control" id="newRole">
+              <option value="1">مدير عام (Super Admin)</option>
+              <option value="2">مدير (Admin)</option>
+              <option value="3">محرر (Editor)</option>
+              <option value="4">مشاهد (Viewer)</option>
+            </select>
+            
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeModal()">
+            إلغاء
+          </button>
+          <button class="btn btn-primary" id="saveUserBtn" onclick="saveUser()">
+            حفظ
           </button>
         </div>
       </div>
-      <div class="input-group">
-        <label class="form-label">الدور</label>
-        <select class="form-control" id="newRole">
-          <option value="admin">مدير</option>
-          <option value="user">موظف</option>
-        </select>
-      </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">إلغاء</button>
-      <button class="btn btn-primary" id="saveUserBtn" onclick="saveUser()">حفظ</button>
-    </div>
-  </div>
-</div>
-
+    
     <script>
+      // ==========================================
+      // ملف: dashboard.js (مُحدّث ومتوافق مع API التوثيق)
+      // ==========================================
+
+      // ✅ إعدادات الـ API
+      const API_BASE_URL = "http://localhost/driver_cards/v1";
+
+      // الحصول على التوكن ومعلومات المستخدم
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
+      const userDataStr =
+        localStorage.getItem("userData") || sessionStorage.getItem("userData");
+      let currentUser = userDataStr ? JSON.parse(userDataStr) : null;
+
       // Global App Data
       const appData = {
-        currentUser: { name: "مدير النظام", role: "admin", avatar: "A" },
-        cards: [
-          { id: "11.00537649", driver: "عبد العلي", company: "شركة شفلوت", date: "2025-12-29", status: "active" },
-          { id: "11.00537650", driver: "محمد العلي", company: "مؤسسة النقل", date: "2025-01-15", status: "active" },
-          { id: "11.00537651", driver: "أحمد محمود", company: "شركة الاتحاد", date: "2025-01-20", status: "pending" },
-          { id: "11.00537652", driver: "خالد عمر", company: "مؤسسة السلام", date: "2024-12-01", status: "expired" }
-        ],
-        users: [
-          { id: 1, username: "Admin", password: "Admin123", role: "admin", status: "active" },
-          { id: 2, username: "User1", password: "password", role: "user", status: "active" }
-        ]
+        currentUser: currentUser || { name: "زائر", role_id: 4 },
+        cards: [],
+        users: [],
+        statuses: [],
+        roles: [],
       };
 
-      // Lifecycle
+      // 🔒 التحقق من التوكن عند تحميل الصفحة
       document.addEventListener("DOMContentLoaded", () => {
+        if (!token) {
+          window.location.href = "index.html";
+          return;
+        }
+
         initPage();
-        renderCards();
-        renderUsers();
-        updateBadges();
+        loadData();
       });
 
-      function initPage() {
-        document.getElementById("miniName").textContent = appData.currentUser.name;
-        document.getElementById("miniAvatar").textContent = appData.currentUser.avatar;
-        document.getElementById("miniRole").textContent = appData.currentUser.role;
+      async function loadData() {
+        // ✅ إضافة: جلب الحالات والأدوار أيضاً
+        await Promise.all([
+          fetchCards(),
+          fetchUsers(),
+          fetchStatuses(),
+          fetchRoles(),
+        ]);
+        updateBadges();
+        applyPermissions();
       }
 
-      // Renderers
+      function initPage() {
+        if (currentUser) {
+          const displayName = currentUser.fullName || currentUser.username;
+          document.getElementById("miniName").textContent = displayName;
+          document.getElementById("miniAvatar").textContent = displayName
+            .charAt(0)
+            .toUpperCase();
+
+          const roleNames = { 1: "مدير عام", 2: "مدير", 3: "محرر", 4: "مشاهد" };
+          document.getElementById("miniRole").textContent =
+            roleNames[currentUser.role_id] || "مستخدم";
+        }
+      }
+
+      // ===== جلب البيانات من API =====
+
+      // 1. جلب البطاقات
+      async function fetchCards() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/cards`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.status === 401) {
+            // التوكن منتهي
+            handleTokenExpired();
+            return;
+          }
+
+          const result = await response.json();
+          if (result.success) {
+            appData.cards = result.cards || [];
+            renderCards();
+          } else {
+            console.error("Error fetching cards:", result.error);
+            showToast("error", "خطأ", result.error || "فشل في جلب البطاقات");
+          }
+        } catch (error) {
+          console.error("Network Error:", error);
+          showToast("error", "خطأ في الاتصال", "تعذر الاتصال بالخادم");
+        }
+      }
+
+      // 2. جلب المستخدمين
+      async function fetchUsers() {
+        // التحقق من الصلاحيات أولاً (حسب التوثيق: super_admin, admin فقط)
+        if (currentUser.role_id > 2) {
+          hideUsersTab();
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/users`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          if (response.status === 403) {
+            hideUsersTab();
+            return;
+          }
+
+          if (response.status === 401) {
+            handleTokenExpired();
+            return;
+          }
+
+          const result = await response.json();
+          if (result.success) {
+            appData.users = result.users || [];
+            renderUsers();
+          } else {
+            console.error("Error fetching users:", result.error);
+          }
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      }
+
+      // ✅ إضافة 3: جلب الحالات (Statuses)
+      async function fetchStatuses() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/statuses`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            appData.statuses = result.statuses || [];
+            populateStatusFilter(appData.statuses);
+          }
+        } catch (error) {
+          console.error("Error fetching statuses:", error);
+        }
+      }
+
+      // ✅ إضافة 4: جلب الأدوار (Roles)
+      async function fetchRoles() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/roles`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            appData.roles = result.roles || [];
+            populateRoleSelect(appData.roles);
+          }
+        } catch (error) {
+          console.error("Error fetching roles:", error);
+        }
+      }
+
+      // ===== عرض البيانات (Renderers) =====
+
       function renderCards() {
         const tbody = document.getElementById("cardsTableBody");
         if (!tbody) return;
-        tbody.innerHTML = appData.cards.map(card => `
-          <tr>
-            <td><strong>${card.id}</strong></td>
-            <td>${card.driver}</td>
-            <td>${card.company}</td>
-            <td>${card.date}</td>
-            <td>${getStatusBadge(card.status)}</td>
-            <td>
-              <div class="table-actions">
-                <button class="btn-icon" onclick="printCard('${card.id}')" title="طباعة"><i class="fas fa-print"></i></button>
-                <button class="btn-icon" onclick="editCard('${card.id}')" title="تعديل"><i class="fas fa-edit"></i></button>
-                <button class="btn-icon delete" onclick="deleteCard('${card.id}')" title="حذف"><i class="fas fa-trash"></i></button>
-              </div>
-            </td>
-          </tr>
-        `).join("");
+
+        if (appData.cards.length === 0) {
+          tbody.innerHTML =
+            '<tr><td colspan="6" style="text-align:center;padding:20px;">لا توجد بطاقات</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = appData.cards
+          .map(
+            (card) => `
+    <tr data-card-id="${card.card_id}">
+      <td><strong>${card.card_number}</strong></td>
+      <td>${card.driver_name_ar || "-"}</td>
+      <td>${card.company_name_ar || "-"}</td>
+      <td>${card.created_at ? card.created_at.split(" ")[0] : "-"}</td>
+      <td>${getStatusBadge(card.status_name)}</td>
+      <td>
+        <div class="table-actions">
+          <button class="btn-icon" onclick="viewCard('${
+            card.card_id
+          }')" title="عرض">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="btn-icon action-edit" onclick="editCard('${
+            card.card_id
+          }')" title="تعديل">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn-icon action-delete" onclick="deleteCard('${
+            card.card_id
+          }')" title="حذف">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `
+          )
+          .join("");
       }
 
       function renderUsers() {
         const grid = document.getElementById("usersGrid");
         if (!grid) return;
-        grid.innerHTML = appData.users.map(user => `
-          <div class="user-card" data-id="${user.id}">
-            <div class="user-avatar">
-              ${user.username.charAt(0).toUpperCase()}
-              <div class="user-status-dot ${user.status}"></div>
-            </div>
-            <div class="user-name">${user.username}</div>
-            <div class="user-role">${user.role === "admin" ? "مدير" : "موظف"}</div>
-            <div class="user-pass-box">
-              <span class="pass-label">كلمة المرور</span>
-              <div class="pass-input-wrapper">
-                <input type="password" class="pass-input" value="${user.password}" readonly id="pass-${user.id}">
-                <button class="pass-toggle" onclick="togglePassVisibility(${user.id})">
-                  <i class="fas fa-eye" id="eye-${user.id}"></i>
-                </button>
-              </div>
-            </div>
-            <div class="user-actions">
-              <button class="btn-action btn-edit" onclick="editUser(${user.id})"><i class="fas fa-edit"></i> تعديل</button>
-              <button class="btn-action btn-delete" onclick="deleteUser(${user.id})"><i class="fas fa-trash"></i> حذف</button>
-            </div>
-          </div>
-        `).join("");
+
+        if (appData.users.length === 0) {
+          grid.innerHTML =
+            '<div style="text-align:center;padding:20px;">لا يوجد مستخدمين</div>';
+          return;
+        }
+
+        grid.innerHTML = appData.users
+          .map((user) => {
+            const roleName = getRoleName(user.role_id);
+            return `
+    <div class="user-card" data-id="${user.user_id}">
+      <div class="user-avatar">
+        ${(user.username || "U").charAt(0).toUpperCase()}
+        <div class="user-status-dot ${
+          user.is_active ? "active" : "inactive"
+        }"></div>
+      </div>
+      <div class="user-name">${user.fullName || user.username}</div>
+      <div class="user-role">${roleName}</div>
+      <div class="user-actions">
+        <button class="btn-action btn-edit action-edit" onclick="editUser('${
+          user.user_id
+        }')">
+          <i class="fas fa-edit"></i> تعديل
+        </button>
+        <button class="btn-action btn-delete action-delete" onclick="deleteUser('${
+          user.user_id
+        }')">
+          <i class="fas fa-trash"></i> حذف
+        </button>
+      </div>
+    </div>
+  `;
+          })
+          .join("");
       }
 
-      function getStatusBadge(status) {
-        const badges = {
-          active: '<span class="badge badge-success">نشط</span>',
-          pending: '<span class="badge badge-warning">قيد الانتظار</span>',
-          expired: '<span class="badge badge-danger">منتهي</span>'
+      // ✅ إضافة: ملء قائمة الفلترة بالحالات
+      function populateStatusFilter(statuses) {
+        const filterSelect = document.getElementById("statusFilter");
+        if (!filterSelect) return;
+
+        filterSelect.innerHTML =
+          '<option value="">كل الحالات</option>' +
+          statuses
+            .map((s) => `<option value="${s.status_id}">${s.name}</option>`)
+            .join("");
+      }
+
+      // ✅ إضافة: ملء قائمة الأدوار
+      function populateRoleSelect(roles) {
+        const roleSelect = document.getElementById("newRole");
+        if (!roleSelect) return;
+
+        roleSelect.innerHTML = roles
+          .map((r) => `<option value="${r.role_id}">${r.name}</option>`)
+          .join("");
+      }
+
+      function getRoleName(roleId) {
+        const roles = {
+          1: "Super Admin",
+          2: "Admin",
+          3: "Editor",
+          4: "Viewer",
         };
-        return badges[status] || status;
+        return roles[roleId] || "User";
+      }
+
+      function getStatusBadge(statusName) {
+        const statusMap = {
+          approved: { class: "badge-success", text: "معتمدة" },
+          draft: { class: "badge-warning", text: "مسودة" },
+          revoked: { class: "badge-danger", text: "ملغاة" },
+          expired: { class: "badge-secondary", text: "منتهية" },
+        };
+
+        const status = statusMap[statusName] || {
+          class: "badge-light",
+          text: statusName,
+        };
+        return `<span class="badge ${status.class}">${status.text}</span>`;
+      }
+
+      // ===== إدارة الصلاحيات =====
+
+      function applyPermissions() {
+        const isViewer = currentUser.role_id === 4;
+        const isEditor = currentUser.role_id === 3;
+        const isAdmin = currentUser.role_id === 2;
+        const isSuperAdmin = currentUser.role_id === 1;
+
+        // إخفاء تبويب المستخدمين للمحرر والمشاهد
+        if (isViewer || isEditor) {
+          hideUsersTab();
+        }
+
+        // إخفاء أزرار الحذف والتعديل للمشاهد فقط
+        if (isViewer) {
+          document
+            .querySelectorAll(".action-delete, .action-edit")
+            .forEach((btn) => {
+              btn.style.display = "none";
+            });
+
+          // إخفاء زر إضافة بطاقة
+          const addCardBtn = document.getElementById("addCardBtn");
+          if (addCardBtn) addCardBtn.style.display = "none";
+        }
+
+        // إخفاء زر حذف المستخدمين للـ Admin (فقط Super Admin يحذف)
+        if (!isSuperAdmin) {
+          document
+            .querySelectorAll(".user-actions .action-delete")
+            .forEach((btn) => {
+              btn.style.display = "none";
+            });
+        }
+      }
+
+      function hideUsersTab() {
+        const usersTab = document.querySelector(".nav-item[data-tab='users']");
+        if (usersTab) usersTab.style.display = "none";
+      }
+
+      // ===== إجراءات البطاقات =====
+
+      function viewCard(cardId) {
+        const card = appData.cards.find((c) => c.card_id == cardId);
+        if (!card) return;
+
+        // عرض تفاصيل البطاقة في Modal
+        showCardDetailsModal(card);
+      }
+
+      function editCard(cardId) {
+        const card = appData.cards.find((c) => c.card_id == cardId);
+        if (!card) return;
+
+        openCardModal(card);
+      }
+
+      // ✅ تصحيح: حذف البطاقة (استخدام ? بدلاً من &)
+      async function deleteCard(cardId) {
+        if (!confirm("هل أنت متأكد من حذف هذه البطاقة؟")) return;
+
+        try {
+          const response = await fetch(
+            `${API_BASE_URL}/cards?card_id=${cardId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const result = await response.json();
+
+          if (result.success) {
+            showToast("success", "تم الحذف", "تم حذف البطاقة بنجاح");
+            fetchCards();
+            updateBadges();
+          } else {
+            showToast("error", "فشل الحذف", result.error || "حدث خطأ ما");
+          }
+        } catch (error) {
+          showToast("error", "خطأ", "فشل الاتصال بالخادم");
+        }
+      }
+
+      // ✅ إضافة: إنشاء بطاقة جديدة
+      async function createNewCard() {
+        // 1. الحصول على رقم البطاقة التالي
+        const cardNumber = await getNextCardNumber();
+        if (!cardNumber) return;
+
+        // 2. فتح Modal الإنشاء مع الرقم التسلسلي
+        openCardModal(null, cardNumber);
+      }
+
+      // ✅ إضافة: جلب رقم البطاقة التالي
+      async function getNextCardNumber() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/get_card_number`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            return result.id;
+          }
+          throw new Error(result.error || "فشل في الحصول على رقم البطاقة");
+        } catch (error) {
+          showToast("error", "خطأ", error.message);
+          return null;
+        }
+      }
+
+      // ✅ إضافة: حفظ بطاقة (إنشاء/تحديث)
+      async function saveCard() {
+        const cardId = document.getElementById("editCardId").value;
+        const isEdit = !!cardId;
+
+        const cardData = {
+          driver_name_ar: document.getElementById("driverNameAr").value,
+          driver_name_en: document.getElementById("driverNameEn").value,
+          card_number: document.getElementById("cardNumber").value,
+          driver_id: document.getElementById("driverId").value,
+          issue_date: document.getElementById("issueDate").value,
+          expiry_date: document.getElementById("expiryDate").value,
+          license_number: document.getElementById("licenseNumber").value,
+          company_name_ar: document.getElementById("companyNameAr").value,
+          company_name_en: document.getElementById("companyNameEn").value,
+          // ... باقي الحقول حسب الحاجة
+        };
+
+        // إضافة verification_token للبطاقات الجديدة
+        if (!isEdit) {
+          cardData.verification_token = generateVerificationToken();
+        } else {
+          cardData.card_id = cardId;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/cards`, {
+            method: isEdit ? "PUT" : "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(cardData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showToast(
+              "success",
+              "تم الحفظ",
+              isEdit ? "تم تحديث البطاقة" : "تم إنشاء البطاقة بنجاح"
+            );
+            closeCardModal();
+            fetchCards();
+            updateBadges();
+          } else {
+            throw new Error(result.error || "فشلت العملية");
+          }
+        } catch (error) {
+          showToast("error", "خطأ", error.message);
+        }
+      }
+
+      function generateVerificationToken() {
+        return (
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15)
+        );
+      }
+
+      // ===== إجراءات المستخدمين =====
+
+      function openAddUserModal() {
+        document.getElementById("userModalTitle").textContent =
+          "إضافة مستخدم جديد";
+        document.getElementById("editUserId").value = "";
+        document.getElementById("newUsername").value = "";
+        document.getElementById("newFullName").value = ""; // ✅ إضافة: الاسم الكامل
+        document.getElementById("newPassword").value = "";
+        document.getElementById("newRole").value = "4";
+        document.getElementById("userModal").classList.add("active");
+      }
+
+      function editUser(userId) {
+        const user = appData.users.find((u) => u.user_id == userId);
+        if (!user) return;
+
+        document.getElementById("userModalTitle").textContent =
+          "تعديل بيانات المستخدم";
+        document.getElementById("editUserId").value = user.user_id;
+        document.getElementById("newUsername").value = user.username;
+        document.getElementById("newFullName").value = user.fullName || ""; // ✅ إضافة
+        document.getElementById("newPassword").value = "";
+        document.getElementById("newRole").value = user.role_id;
+
+        document.getElementById("userModal").classList.add("active");
+      }
+
+      // ✅ تحديث: حفظ المستخدم مع الاسم الكامل
+      async function saveUser() {
+        const editId = document.getElementById("editUserId").value;
+        const username = document.getElementById("newUsername").value.trim();
+        const fullName = document.getElementById("newFullName").value.trim(); // ✅ إضافة
+        const password = document.getElementById("newPassword").value;
+        const role_id = parseInt(document.getElementById("newRole").value);
+
+        if (!username)
+          return showToast("error", "خطأ", "يرجى إدخال اسم المستخدم");
+        if (!editId && !password)
+          return showToast(
+            "error",
+            "خطأ",
+            "يرجى إدخال كلمة المرور للمستخدم الجديد"
+          );
+
+        const bodyData = {
+          username,
+          role_id,
+          fullName, // ✅ إضافة
+        };
+
+        if (password) bodyData.password = password;
+        if (editId) bodyData.user_id = editId;
+
+        try {
+          const method = editId ? "PUT" : "POST";
+          const response = await fetch(`${API_BASE_URL}/users`, {
+            method: method,
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(bodyData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showToast(
+              "success",
+              "تم الحفظ",
+              editId ? "تم تحديث بيانات المستخدم" : "تم إضافة المستخدم بنجاح"
+            );
+            closeModal();
+            fetchUsers();
+            updateBadges();
+          } else {
+            throw new Error(result.error || "فشلت العملية");
+          }
+        } catch (error) {
+          showToast("error", "خطأ", error.message);
+        }
+      }
+
+      async function deleteUser(userId) {
+        if (!confirm("هل أنت متأكد من حذف هذا المستخدم؟")) return;
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/users`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ user_id: userId }),
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            showToast("success", "تم الحذف", "تم حذف المستخدم بنجاح");
+            fetchUsers();
+            updateBadges();
+          } else {
+            showToast("error", "فشل", result.error);
+          }
+        } catch (error) {
+          showToast("error", "خطأ", "فشل الاتصال");
+        }
+      }
+
+      // ===== أدوات مساعدة =====
+
+      function closeModal() {
+        document.getElementById("userModal").classList.remove("active");
+      }
+
+      function closeCardModal() {
+        document.getElementById("cardModal").classList.remove("active");
+      }
+
+      function openCardModal(card = null, prefillCardNumber = null) {
+        const modal = document.getElementById("cardModal");
+        const isEdit = !!card;
+
+        document.getElementById("cardModalTitle").textContent = isEdit
+          ? "تعديل بطاقة"
+          : "إنشاء بطاقة جديدة";
+        document.getElementById("editCardId").value = card ? card.card_id : "";
+        document.getElementById("cardNumber").value = card
+          ? card.card_number
+          : prefillCardNumber || "";
+        document.getElementById("cardNumber").readOnly = !isEdit; // الرقم غير قابل للتعديل في الإنشاء
+
+        if (card) {
+          document.getElementById("driverNameAr").value =
+            card.driver_name_ar || "";
+          document.getElementById("driverNameEn").value =
+            card.driver_name_en || "";
+          document.getElementById("driverId").value = card.driver_id || "";
+          document.getElementById("issueDate").value = card.issue_date || "";
+          document.getElementById("expiryDate").value = card.expiry_date || "";
+          document.getElementById("licenseNumber").value =
+            card.license_number || "";
+          document.getElementById("companyNameAr").value =
+            card.company_name_ar || "";
+          document.getElementById("companyNameEn").value =
+            card.company_name_en || "";
+        } else {
+          // مسح الحقول للبطاقة الجديدة
+          document.querySelectorAll("#cardModal input").forEach((input) => {
+            if (input.id !== "cardNumber") input.value = "";
+          });
+        }
+
+        modal.classList.add("active");
+      }
+
+      function showCardDetailsModal(card) {
+        // عرض تفاصيل البطاقة فقط للعرض
+        const detailsHtml = `
+    <div class="card-details">
+      <p><strong>رقم البطاقة:</strong> ${card.card_number}</p>
+      <p><strong>السائق:</strong> ${card.driver_name_ar}</p>
+      <p><strong>الشركة:</strong> ${card.company_name_ar}</p>
+      <p><strong>الحالة:</strong> ${getStatusBadge(card.status_name)}</p>
+      <p><strong>تاريخ الإنشاء:</strong> ${card.created_at}</p>
+    </div>
+  `;
+
+        // يمكنك استخدام Modal منفصل أو نفس Modal التعديل
+        showToast("info", "تفاصيل البطاقة", `بطاقة رقم ${card.card_number}`);
+      }
+
+      function handleTokenExpired() {
+        showToast("error", "انتهت الجلسة", "يرجى تسجيل الدخول مرة أخرى");
+        setTimeout(() => {
+          logout();
+        }, 2000);
+      }
+
+      function toggleModalPassVisibility() {
+        const input = document.getElementById("newPassword");
+        const eye = document.getElementById("modalPassEye");
+        const isPass = input.type === "password";
+        input.type = isPass ? "text" : "password";
+        eye.className = isPass ? "fas fa-eye-slash" : "fas fa-eye";
+      }
+
+      function filterCards() {
+        const searchVal = document
+          .getElementById("cardsSearch")
+          .value.toLowerCase();
+        const statusFilter = document.getElementById("statusFilter")?.value;
+
+        document.querySelectorAll("#cardsTableBody tr").forEach((row) => {
+          const textMatch = row.textContent.toLowerCase().includes(searchVal);
+          const statusMatch =
+            !statusFilter ||
+            row
+              .querySelector(".badge")
+              ?.textContent.includes(
+                appData.statuses.find((s) => s.status_id == statusFilter)
+                  ?.name || ""
+              );
+
+          row.style.display = textMatch && statusMatch ? "" : "none";
+        });
+      }
+
+      function updateBadges() {
+        const cardsBadge = document.getElementById("cardsBadge");
+        const usersBadge = document.getElementById("usersBadge");
+
+        if (cardsBadge) cardsBadge.textContent = appData.cards.length;
+        if (usersBadge) usersBadge.textContent = appData.users.length;
+      }
+
+      function exportCards() {
+        if (appData.cards.length === 0) {
+          showToast("warning", "تنبيه", "لا توجد بطاقات للتصدير");
+          return;
+        }
+
+        // تحويل البيانات لـ CSV
+        const headers = [
+          "رقم البطاقة",
+          "اسم السائق",
+          "الشركة",
+          "الحالة",
+          "تاريخ الإنشاء",
+        ];
+        const rows = appData.cards.map((c) => [
+          c.card_number,
+          c.driver_name_ar,
+          c.company_name_ar,
+          c.status_name,
+          c.created_at,
+        ]);
+
+        const csvContent = [headers, ...rows]
+          .map((e) => e.join(","))
+          .join("\n");
+        const blob = new Blob(["\ufeff" + csvContent], {
+          type: "text/csv;charset=utf-8;",
+        });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "cards_export.csv";
+        link.click();
+
+        showToast("success", "تم التصدير", "تم تحميل ملف CSV");
+      }
+
+      function showToast(type, title, message) {
+        const container = document.getElementById("toastContainer");
+        if (!container) {
+          console.warn("Toast container not found");
+          alert(`${title}: ${message}`);
+          return;
+        }
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        const icons = {
+          success: "fa-check-circle",
+          error: "fa-exclamation-circle",
+          info: "fa-info-circle",
+          warning: "fa-exclamation-triangle",
+        };
+
+        toast.innerHTML = `
+    <i class="fas ${icons[type] || "fa-info"} toast-icon"></i>
+    <div>
+      <div class="toast-title">${title}</div>
+      <div class="toast-msg">${message}</div>
+    </div>
+  `;
+
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add("show"), 10);
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => toast.remove(), 400);
+        }, 3000);
+      }
+
+      function logout() {
+        if (confirm("هل تريد تسجيل الخروج؟")) {
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("userData");
+          localStorage.removeItem("userRoleId");
+          sessionStorage.removeItem("authToken");
+          sessionStorage.removeItem("userData");
+          sessionStorage.removeItem("userRoleId");
+          window.location.href = "index.html";
+        }
+      }
+
+      function showNotifications() {
+        showToast("info", "الإشعارات", "لا توجد إشعارات جديدة حالياً.");
       }
 
       // Sidebar & Navigation
       function toggleSidebar(force) {
         const sidebar = document.getElementById("sidebar");
         const overlay = document.getElementById("overlay");
-        const isActive = typeof force === 'boolean' ? force : !sidebar.classList.contains("active");
+        const isActive =
+          typeof force === "boolean"
+            ? force
+            : !sidebar.classList.contains("active");
         sidebar.classList.toggle("active", isActive);
         overlay.classList.toggle("active", isActive);
       }
 
       function switchTab(tabId, element) {
-        document.querySelectorAll(".tab-content").forEach(tab => tab.classList.remove("active"));
-        document.querySelectorAll(".nav-item").forEach(item => item.classList.remove("active"));
-        document.getElementById(tabId).classList.add("active");
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((tab) => tab.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((item) => item.classList.remove("active"));
+
+        const targetTab = document.getElementById(tabId);
+        if (targetTab) targetTab.classList.add("active");
         if (element) element.classList.add("active");
-        const titles = { cards: "fa-id-card", users: "fa-users", settings: "fa-cog" };
-        const text = { cards: "إدارة البطاقات", users: "إدارة المستخدمين", settings: "الإعدادات" };
-        document.getElementById("pageTitle").innerHTML = `<i class="fas ${titles[tabId]}"></i> ${text[tabId]}`;
+
+        const titles = {
+          cards: { icon: "fa-id-card", text: "إدارة البطاقات" },
+          users: { icon: "fa-users", text: "إدارة المستخدمين" },
+          settings: { icon: "fa-cog", text: "الإعدادات" },
+        };
+
+        const title = titles[tabId];
+        if (title) {
+          document.getElementById(
+            "pageTitle"
+          ).innerHTML = `<i class="fas ${title.icon}"></i> ${title.text}`;
+        }
+
         if (window.innerWidth <= 768) toggleSidebar(false);
       }
 
-      // Card Actions
-      function printCard(id) { showToast("info", "طباعة", `جاري تجهيز البطاقة رقم ${id} للطباعة...`); }
-      function editCard(id) { showToast("warning", "تنبيه", "خاصية تعديل البطاقات ستتوفر قريباً في التحديث القادم."); }
-      function deleteCard(id) {
-        if (confirm("هل أنت متأكد من حذف هذه البطاقة؟")) {
-          appData.cards = appData.cards.filter(c => c.id !== id);
-          renderCards();
-          updateBadges();
-          showToast("success", "تم الحذف", "تم حذف البطاقة بنجاح");
-        }
-      }
-
-      // User Logic (Fix for the missing editUser function)
-      function openAddUserModal() {
-        document.getElementById("userModalTitle").textContent = "إضافة مستخدم جديد";
-        document.getElementById("editUserId").value = "";
-        document.getElementById("newUsername").value = "";
-        document.getElementById("newPassword").value = "";
-        document.getElementById("userModal").classList.add("active");
-      }
-
-      function editUser(userId) {
-        const user = appData.users.find(u => u.id === userId);
-        if (!user) return;
-        
-        document.getElementById("userModalTitle").textContent = "تعديل بيانات المستخدم";
-        document.getElementById("editUserId").value = user.id;
-        document.getElementById("newUsername").value = user.username;
-        document.getElementById("newPassword").value = user.password;
-        document.getElementById("newRole").value = user.role;
-        
-        document.getElementById("userModal").classList.add("active");
-      }
-
-      function saveUser() {
-        const editId = document.getElementById("editUserId").value;
-        const username = document.getElementById("newUsername").value;
-        const password = document.getElementById("newPassword").value;
-        const role = document.getElementById("newRole").value;
-
-        if (!username || !password) return showToast("error", "خطأ", "يرجى ملء كافة البيانات");
-
-        if (editId) {
-          // Update existing
-          const index = appData.users.findIndex(u => u.id == editId);
-          if (index !== -1) {
-            appData.users[index] = { ...appData.users[index], username, password, role };
-            showToast("success", "تم التحديث", "تم تحديث بيانات المستخدم بنجاح");
-          }
-        } else {
-          // Add new
-          appData.users.push({ id: Date.now(), username, password, role, status: "active" });
-          showToast("success", "تمت الإضافة", "تم إضافة المستخدم بنجاح");
-        }
-
-        renderUsers();
-        updateBadges();
-        closeModal();
-      }
-
-      function deleteUser(id) {
-        if (confirm("هل أنت متأكد من حذف هذا المستخدم؟")) {
-          appData.users = appData.users.filter(u => u.id !== id);
-          renderUsers();
-          updateBadges();
-          showToast("success", "تم الحذف", "تم حذف المستخدم بنجاح");
-        }
-      }
-
-      function closeModal() { document.getElementById("userModal").classList.remove("active"); }
-
-      // Utilities
-      function togglePassVisibility(userId) {
-        const input = document.getElementById(`pass-${userId}`);
-        const eye = document.getElementById(`eye-${userId}`);
-        const isPass = input.type === "password";
-        input.type = isPass ? "text" : "password";
-        eye.className = isPass ? "fas fa-eye-slash" : "fas fa-eye";
-      }
-      
-      function toggleModalPassVisibility() {
-        const input = document.getElementById('newPassword');
-        const eye = document.getElementById('modalPassEye');
-        const isPass = input.type === "password";
-        input.type = isPass ? "text" : "password";
-        eye.className = isPass ? "fas fa-eye-slash" : "fas fa-eye";
-      }
-      
-      function filterCards() {
-        const val = document.getElementById("cardsSearch").value.toLowerCase();
-        document.querySelectorAll("#cardsTableBody tr").forEach(row => {
-          row.style.display = row.textContent.toLowerCase().includes(val) ? "" : "none";
-        });
-      }
-
-      function updateBadges() {
-        document.getElementById("cardsBadge").textContent = appData.cards.length;
-        document.getElementById("usersBadge").textContent = appData.users.length;
-      }
-
-      function exportCards() {
-        showToast("info", "جاري التصدير", "يتم تحضير ملف البيانات...");
-        setTimeout(() => showToast("success", "تم التصدير", "تم تحميل الملف بنجاح"), 1500);
-      }
-
-      function showToast(type, title, message) {
-        const container = document.getElementById("toastContainer");
-        const toast = document.createElement("div");
-        toast.className = `toast ${type}`;
-        const icons = { success: "fa-check-circle", error: "fa-exclamation-circle", info: "fa-info-circle", warning: "fa-exclamation-triangle" };
-        toast.innerHTML = `<i class="fas ${icons[type] || 'fa-info'} toast-icon"></i>
-          <div><div class="toast-title">${title}</div><div class="toast-msg">${message}</div></div>`;
-        container.appendChild(toast);
-        setTimeout(() => toast.classList.add("show"), 10);
-        setTimeout(() => { toast.classList.remove("show"); setTimeout(() => toast.remove(), 400); }, 3000);
-      }
-
-      function logout() { if (confirm("هل تريد تسجيل الخروج؟")) window.location.href = "/index.html"; }
-
-      function showNotifications() { showToast("info", "الإشعارات", "لا توجد إشعارات جديدة حالياً."); }
-
+      // اختصارات لوحة المفاتيح
       document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape") closeModal();
+        if (e.key === "Escape") {
+          closeModal();
+          closeCardModal();
+        }
       });
     </script>
   </body>
