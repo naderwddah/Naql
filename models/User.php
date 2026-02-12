@@ -76,24 +76,83 @@ class User {
         ");
         $stmt->execute(['username' => $username]);
         $user = $stmt->fetch();
-
+    
         // المستخدم غير موجود
         if (!$user) {
             Response::error("Invalid credentials", 401);
         }
-
+    
         // المستخدم غير نشط
         if (!$user['is_active']) {
             Response::error("Account is disabled", 403);
         }
-
-        // التحقق من كلمة المرور
-        if (!password_verify($password, $user['password_hash'])) {
+    
+        // التحقق من كلمة المرور كنص مباشر
+        if (trim($password) !== trim($user['password_hash'])) {
             Response::error("Invalid credentials", 401);
         }
-
+    
         return $user;
     }
+    
+
+    /**
+ * تحديث بيانات المستخدم
+ * @param int $user_id معرف المستخدم
+ * @param string|null $fullName الاسم الكامل الجديد (اختياري)
+ * @param string|null $username اسم المستخدم الجديد (اختياري)
+ * @param int|null $role_id معرف الصلاحية الجديد (اختياري)
+ * @param int|null $is_active حالة الحساب 1=نشط، 0=موقوف (اختياري)
+ * @return bool نجاح العملية
+ */
+public function update($user_id, $fullName = null, $username = null, $role_id = null, $is_active = null,$password=null) {
+    $fields = [];
+    $params = ['user_id' => $user_id];
+
+    if ($fullName !== null) {
+        $fields[] = "fullName = :fullName";
+        $params['fullName'] = $fullName;
+    }
+
+    if ($username !== null) {
+        $fields[] = "username = :username";
+        $params['username'] = $username;
+    }
+
+    if ($role_id !== null) {
+        $fields[] = "role_id = :role_id";
+        $params['role_id'] = $role_id;
+    }
+
+    if ($is_active !== null) {
+        $fields[] = "is_active = :is_active";
+        $params['is_active'] = $is_active;
+    }
+
+    if ($password !== null) {
+        $fields[] = "password_hash = :password";
+        $params['password'] = $password;
+    }
+
+    if (empty($fields)) {
+        // لا توجد بيانات للتحديث
+        return false;
+    }
+
+    $sql = "UPDATE users SET " . implode(', ', $fields) . " WHERE user_id = :user_id";
+
+    try {
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($params);
+    } catch (PDOException $e) {
+        // تحقق من تكرار اسم المستخدم
+        if ($e->errorInfo[1] == 1062) {
+            Response::error("Username already exists", 409);
+        }
+        throw $e;
+    }
+}
+
 
     /**
      * تحديث كلمة المرور

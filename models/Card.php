@@ -34,8 +34,7 @@ class Card {
             // تأكيد المعاملة
             $this->pdo->commit();
             
-            // 10000000 + id = رقم 8 أرقام
-            return 00000000 + $id;
+            return $id;
             
         } catch (Exception $e) {
             // تراجع في حالة الخطأ
@@ -63,7 +62,7 @@ class Card {
             // 1. إدخال البطاقة في جدول cards
             $stmt = $this->pdo->prepare("
                 INSERT INTO cards ( card_number, status_id, created_by) 
-                VALUES ( :card_number, 1, :created_by)
+                VALUES ( :card_number, 2, :created_by)
             ");
             $stmt->execute([
                 'card_number' => $card_number,

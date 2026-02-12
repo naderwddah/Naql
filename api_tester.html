@@ -385,7 +385,7 @@
         }
 
         async function apiRequest(endpoint, method, data = null, auth = true) {
-            const url = `${BASE_URL}/index.php?path=${endpoint}`;
+            const url = `${BASE_URL}/v1/${endpoint}`;
             const headers = {
                 'Content-Type': 'application/json'
             };
@@ -507,24 +507,33 @@
 
         // إنشاء بطاقة جديدة
         async function testCreateCard() {
+            let get_card_number=await apiRequest('cards&get_card_number=get_card_number', 'GET')
+            const array = new Uint8Array(32);
+crypto.getRandomValues(array);
+
+const token = Array.from(array)
+  .map(b => b.toString(16).padStart(2, '0'))
+  .join('');
             const sampleCard = {
-                driver_name_ar: "محمد أحمد العلي",
-                driver_name_en: "Mohammed Ahmed Alali",
-                driver_id: "1234567890",
-                company_name_ar: "شركة النقل السريع",
-                company_name_en: "Fast Transport Company",
+                driver_name_ar: "محمد  العلي",
+                driver_name_en: "Mohammed  Alali",
+                driver_id: "12390",
+                card_number:get_card_number.data.card_number,
+                verification_token:token,
+                company_name_ar: "شركة  السريع",
+                company_name_en: " Transport Company",
                 issue_date: "2025-01-01",
                 expiry_date: "2026-01-01",
                 card_category_ar: "خاصة",
                 card_category_en: "Private",
-                license_number: "11/00052782",
+                license_number: "02782",
                 license_city_ar: "الرياض",
                 license_city_en: "Riyadh",
                 license_issue_date: "2025-01-01",
                 license_expiry_date: "2026-01-01",
                 activity_type_ar: "نقل خفيف",
                 activity_type_en: "Light Transport",
-                moi_number: "9876543210"
+                moi_number: ""
             };
 
             await apiRequest('cards', 'POST', sampleCard);

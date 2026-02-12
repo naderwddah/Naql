@@ -66,11 +66,29 @@ class UsersController {
             throw $e;
         }
     }
+ /**
+     * تحديث  مستخدم
+     */
 
+     public function update($data) {
+        if (!in_array($this->authUser['role_id'], self::PERMISSIONS['update'])) {
+            Response::error("Forbidden", 403);
+        }
+
+        $user_id = $data['user_id'] ?? null;
+
+        if (!$user_id) {
+            Response::error("user_id required", 400);
+        }
+
+        $this->userModel->update($user_id, $data['fullName']??null, $data['username']??null, $data['role_id']??null, $data['is_active']??null,$data['password']??null);
+        $this->logAction('update_user', $user_id);
+        Response::success(['message' => 'User updated successfully']);
+    }
     /**
      * تحديث كلمة مرور مستخدم
      */
-    public function update($data) {
+    public function updatePassword($data) {
         if (!in_array($this->authUser['role_id'], self::PERMISSIONS['update'])) {
             Response::error("Forbidden", 403);
         }

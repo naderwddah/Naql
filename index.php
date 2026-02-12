@@ -31,6 +31,17 @@ if ($path === 'login' && $method === 'POST') {
 }
 
 // ============================================
+// 2. التحقق من البطاقة (عام - بدون توكن)
+// ============================================
+    if ($path === 'verify' && $method === 'GET'){
+        if ($method === 'GET' && isset($_GET['token'])) {
+            $controller = new CardsController($pdo, null);
+            $controller->verify($_GET['token']);
+        } else {
+            Response::error("Invalid request", 400);
+        }}
+
+// ============================================
 // 3. التحقق من التوكن للمسارات المحمية
 // ============================================
 $headers = getallheaders();
@@ -38,7 +49,7 @@ $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZ
 $token = str_replace('Bearer ', '', $authHeader);
 
 // جميع المسارات ماعدا login تحتاج توكن
-if (!in_array($path, ['login'])) {
+if (!in_array($path, ['login']) || !in_array($path, ['verify'])) {
     $authUser = AuthHelper::checkToken($pdo, $token);
 }
 
@@ -133,18 +144,6 @@ switch ($path) {
                 
             default:
                 Response::error("Method not allowed", 405);
-        }
-        break;
-
-    // ----------------------------
-    // التحقق من البطاقة (عام)
-    // ----------------------------
-    case 'verify':
-        if ($method === 'GET' && isset($_GET['token'])) {
-            $controller = new CardsController($pdo, null);
-            $controller->verify($_GET['token']);
-        } else {
-            Response::error("Invalid request", 400);
         }
         break;
 

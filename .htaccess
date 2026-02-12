@@ -12,14 +12,22 @@ RedirectMatch 403 /\..*$
 RedirectMatch 403 ^/(config|controllers|helpers|logs|models)/?$
 
 # منع الوصول للملفات الحساسة مباشرة
-<FilesMatch "\.(ini|log|sql)$">
+<FilesMatch "\.(ini|error|log|sql)$">
     Require all denied
 </FilesMatch>
+
+# استثناء api_tester.html من إعادة التوجيه
+RewriteRule ^api_tester\.html$ - [L]
+
 
 # إعادة التوجيه إلى index.php لأي مسار غير موجود
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
+# إعادة توجيه مسارات v1 إلى index.php
 RewriteRule ^v1/?(.*)$ index.php?path=$1 [QSA,L]
+
+# إعادة توجيه أي مسار آخر إلى index.php
 RewriteRule ^(.*)$ index.php?path=$1 [QSA,L]
 
 # تعيين الترميز الافتراضي
@@ -36,9 +44,9 @@ Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
 Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
 
 # معالجة طلبات OPTIONS (Preflight) لجميع المسارات
-#<If "%{REQUEST_METHOD} == 'OPTIONS'">
-#    Header always set Access-Control-Max-Age "86400"
-#    Require all granted
-#    RewriteEngine Off
-#    RewriteRule ^ - [R=200,L]
-#</If>
+<If "%{REQUEST_METHOD} == 'OPTIONS'">
+    Header always set Access-Control-Max-Age "86400"
+    Require all granted
+    RewriteEngine Off
+    RewriteRule ^ - [R=200,L]
+</If>

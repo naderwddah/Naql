@@ -43,7 +43,9 @@ class CardsController {
         Response::success(['cards' => $cards]);
     }
     public function GetCardNumber(){
-        $this->cardModel->generateCardNumber();
+        $card_number=$this->cardModel->generateCardNumber();
+        Response::success(['card_number' => $card_number]);
+
     }
     /**
      * عرض بطاقة محددة
