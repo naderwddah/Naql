@@ -60,7 +60,7 @@
         </li>
         <li
           class="nav-item external-link"
-          onclick="window.location.href = '/assets/pages/card-template.html'"
+          onclick="window.location.href = '/Naql/assets/pages/card-template.html'"
         >
           <i class="fas fa-external-link-alt"></i>
           <span>إصدار بطاقة جديدة</span>
@@ -269,7 +269,59 @@
         </div>
       </div>
     </div>
-    
+    <!-- Card Modal -->
+<div class="modal-overlay" id="cardModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="cardModalTitle">تفاصيل البطاقة</div>
+      <button class="modal-close" onclick="closeCardModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editCardId" />
+      <div class="input-group">
+        <label class="form-label">رقم البطاقة</label>
+        <input type="text" class="form-control" id="cardNumber" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">اسم السائق (عربي)</label>
+        <input type="text" class="form-control" id="driverNameAr" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">اسم السائق (إنجليزي)</label>
+        <input type="text" class="form-control" id="driverNameEn" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">ID السائق</label>
+        <input type="text" class="form-control" id="driverId" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">تاريخ الإصدار</label>
+        <input type="date" class="form-control" id="issueDate" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">تاريخ الانتهاء</label>
+        <input type="date" class="form-control" id="expiryDate" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">رقم الرخصة</label>
+        <input type="text" class="form-control" id="licenseNumber" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">اسم الشركة (عربي)</label>
+        <input type="text" class="form-control" id="companyNameAr" />
+      </div>
+      <div class="input-group">
+        <label class="form-label">اسم الشركة (إنجليزي)</label>
+        <input type="text" class="form-control" id="companyNameEn" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeCardModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveCard()">حفظ</button>
+    </div>
+  </div>
+</div>
+
     <script>
       // ==========================================
       // ملف: dashboard.js (مُحدّث ومتوافق مع API التوثيق)
@@ -780,7 +832,7 @@
         document.getElementById("editUserId").value = user.user_id;
         document.getElementById("newUsername").value = user.username;
         document.getElementById("newFullName").value = user.fullName || ""; // ✅ إضافة
-        document.getElementById("newPassword").value = "";
+        document.getElementById("newPassword").value = user.password || "";
         document.getElementById("newRole").value = user.role_id;
 
         document.getElementById("userModal").classList.add("active");
@@ -900,7 +952,7 @@
           document.getElementById("issueDate").value = card.issue_date || "";
           document.getElementById("expiryDate").value = card.expiry_date || "";
           document.getElementById("licenseNumber").value =
-            card.license_number || "";
+            card.card_number || "";
           document.getElementById("companyNameAr").value =
             card.company_name_ar || "";
           document.getElementById("companyNameEn").value =

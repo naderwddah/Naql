@@ -11,8 +11,10 @@
     rel="stylesheet">
 
   <!-- إضافة مكتبات jsPDF و html2canvas -->
-  <script src="/assets/js/jspdf.umd.min.js"></script>
-  <script src="/assets/js/html2canvas.min.js"></script>
+  <script src="../js/jspdf.umd.min.js"></script>
+  <script src="../js/html2canvas.min.js"></script>
+  <script src="../js/qrcode.min.js"></script>
+
   <style>
     /* ================= PDF SCOPE (عزل كامل) ================= */
     .pdf-scope {
@@ -624,7 +626,7 @@
 
         <div class="form-group">
           <label>رقم الترخيص</label>
-          <input type="text" id="license_number" name="license_number" readonly>
+          <input type="text" id="license_number" name="license_number">
         </div>
 
         <div class="form-group">
@@ -692,6 +694,7 @@
   </div>
 
   <script>
+
     /* ===== أدوات ===== */
     function randomDigits(len) {
       return Math.floor(Math.random() * Math.pow(10, len))
@@ -699,29 +702,10 @@
         .padStart(len, '0');
     }
 
-    /* ===== توليد QR ===== */
-    function generateQR(cardNumber) {
-      const img = document.getElementById('qr_preview_img');
-      const placeholder = document.getElementById('qr_placeholder');
-      const hidden = document.getElementById('qr_image_url');
-
-      const url = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(cardNumber)}`;
-
-      img.src = url;
-      img.style.display = 'block';
-      placeholder.style.display = 'none';
-      hidden.value = url;
-    }
+    let currentVerificationToken = null;
 
     /* ===== توليد تلقائي ===== */
-    function setAutoValues() {
-
-      const cardNumber = `11.${randomDigits(8)}`;
-      document.getElementById('driver_card_number').value = cardNumber;
-      generateQR(cardNumber);
-
-      document.getElementById('license_number').value = `11/${randomDigits(8)}`;
-
+    function setAutoDates() {
       const today = new Date();
       const nextYear = new Date(today);
       nextYear.setFullYear(today.getFullYear() + 1);
@@ -733,8 +717,140 @@
       document.getElementById('license_issue_date').value = format(today);
       document.getElementById('license_expiry_date').value = format(nextYear);
     }
+    function buildVerificationURL(token) {
+      return `http://localhost/driver_cards/verify.html?token=${token}`;
+    }
+    /* ===== توليد QR ===== */
 
-    window.addEventListener('load', setAutoValues);
+    function generateQR(url) {
+      const img = document.getElementById("qr_preview_img");
+      const placeholder = document.getElementById("qr_placeholder");
+      const hidden = document.getElementById("qr_image_url");
+
+      if (!img) {
+        console.error("QR preview image element not found");
+        return;
+      }
+
+      // توليد QR باستخدام مكتبة QRCode على canvas مؤقت
+      const tempDiv = document.createElement("div");
+      new QRCode(tempDiv, {
+        text: url,
+        width: 150,
+        height: 150
+      });
+
+      // انتظر قليلاً حتى يتم إنشاء canvas
+      setTimeout(() => {
+        const canvas = tempDiv.querySelector("canvas");
+        if (!canvas) {
+          console.error("QR canvas not generated");
+          return;
+        }
+
+        const base64 = canvas.toDataURL("image/png");
+
+        // عرض الصورة
+        img.src = base64;
+        img.style.display = "block";
+
+        // إخفاء placeholder
+        if (placeholder) {
+          placeholder.style.display = "none";
+        }
+
+        // تخزين الصورة في hidden input
+        if (hidden) {
+          hidden.value = base64;
+        }
+      }, 100);
+    }
+
+
+    function generateToken() {
+      const array = new Uint8Array(32);
+      crypto.getRandomValues(array);
+
+      return Array.from(array)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    }
+
+
+    const API_BASE_URL = "http://localhost/driver_cards/v1";
+
+    async function apiRequest(endpoint, method = "GET", data = null) {
+
+      const token =
+        localStorage.getItem("authToken") ||
+        sessionStorage.getItem("authToken");
+
+      const headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      const options = {
+        method,
+        headers
+      };
+
+      if (data && method !== "GET") {
+        options.body = JSON.stringify(data);
+      }
+
+      const response = await fetch(`${API_BASE_URL}/${endpoint}`, options);
+
+      // معالجة خطأ HTTP
+      if (!response.ok) {
+
+        if (response.status === 401) {
+          alert("انتهت الجلسة، يرجى تسجيل الدخول مجدداً");
+          window.location.href = "/login.html";
+        }
+
+        const errorText = await response.text();
+        throw new Error(errorText || "Request failed");
+      }
+
+      return await response.json();
+    }
+
+
+    window.addEventListener('DOMContentLoaded', initPage);
+
+    async function initPage() {
+      try {
+        // 1️⃣ جلب رقم البطاقة من السيرفر
+        const response = await apiRequest('cards&get_card_number=get_card_number', 'GET');
+        // console.log(response);
+        const cardNumber = response.card_number;
+
+        document.getElementById('driver_card_number').value = cardNumber;
+
+        // توليد QR بناءً على الرقم القادم من السيرفر
+        generateQR(cardNumber);
+
+        // 1️⃣ توليد token
+        currentVerificationToken = generateToken();
+
+        // 2️⃣ بناء رابط التحقق
+        const verificationURL = buildVerificationURL(currentVerificationToken);
+
+        // 3️⃣ توليد QR للرابط
+        generateQR(verificationURL);
+        // 2️⃣ باقي القيم التلقائية (تواريخ فقط)
+        setAutoDates();
+
+      } catch (err) {
+        console.error(err);
+        alert("فشل تحميل رقم البطاقة من السيرفر");
+      }
+    }
+
 
     /* ===== الترجمة ===== */
     let change = false;
@@ -791,13 +907,13 @@
       <div class="pdf-scope">
         <div class="card-preview" id="cardToPrint">
           <div class="card-bg-placeholder"></div>
-            <img src="/assets/images/1.png" class="bg-img" alt="Background" />
+            <img src="../images/1.png" class="bg-img" alt="Background" />
           
           <img class="card-qr" src="${data.qr_image_url}" alt="QR Code" />
           
           <div class="card-header">
             <h1>بطاقة سائق - Driver Card</h1>
-            <p>رقم البطاقة: ${data.driver_card_number}</p>
+            <p>رقم البطاقة: ${data.card_number}</p>
           </div>
           
           <div class="card-content">
@@ -810,7 +926,7 @@
               <div class="card-section-body">
                 <div class="card-grid">
                   <div>
-                    <div class="card-row"><span class="card-label">رقم بطاقة السائق:</span><span class="card-value card-value-ar">${data.driver_card_number}</span></div>
+                    <div class="card-row"><span class="card-label">رقم بطاقة السائق:</span><span class="card-value card-value-ar">${data.card_number}</span></div>
                     <div class="card-row"><span class="card-label">اسم السائق:</span><span class="card-value card-value-ar">${data.driver_name_ar}</span></div>
                     <div class="card-row"><span class="card-label">رقم هوية السائق:</span><span class="card-value card-value-ar">${data.driver_id}</span></div>
                     <div class="card-row"><span class="card-label">تاريخ الإصدار:</span><span class="card-value card-value-ar">${data.issue_date}</span></div>
@@ -843,7 +959,7 @@
                     <div class="card-row"><span class="card-label">تاريخ الإصدار:</span><span class="card-value card-value-ar">${data.license_issue_date}</span></div>
                     <div class="card-row"><span class="card-label">تاريخ الانتهاء:</span><span class="card-value card-value-ar">${data.license_expiry_date}</span></div>
                     <div class="card-row"><span class="card-label">نوع النشاط:</span><span class="card-value card-value-ar">${data.activity_type_ar}</span></div>
-                    <div class="card-row"><span class="card-label">رقم هوية المنشأة:</span><span class="card-value card-value-ar">${data.moi_number}</span></div>
+                    <div class="card-row"><span class="card-label">رقم هوية المنشأة:</span><span class="card-value card-value-ar">${data.moi_number??data.license_number}</span></div>
                     <div class="card-row"><span class="card-label">اسم المنشأة:</span><span class="card-value card-value-ar">${data.company_name_ar}</span></div>
                   </div>
                   <div class="card-ltr">
@@ -882,80 +998,108 @@
     }
 
     async function handleFormSubmit() {
-      const form = document.getElementById('driverCardForm');
-      const submitBtn = document.querySelector('.btn-submit');
-      const originalText = submitBtn.textContent;
+  const form = document.getElementById('driverCardForm');
+  const submitBtn = document.querySelector('.btn-submit');
+  const originalText = submitBtn.textContent;
 
-      submitBtn.textContent = 'جاري التوليد...';
-      submitBtn.disabled = true;
+  submitBtn.textContent = 'جاري المعالجة...';
+  submitBtn.disabled = true;
 
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+  try {
+    const formData = new FormData(form);
+    const dataFromForm = Object.fromEntries(formData.entries());
 
-      try {
-        // إنشاء HTML البطاقة
-        const cardHTML = generateCardHTML(data);
-
-        // عنصر مؤقت
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = cardHTML;
-        tempDiv.style.position = 'fixed';
-        tempDiv.style.left = '-10000px';
-        tempDiv.style.top = '0';
-        document.body.appendChild(tempDiv);
-
-        const cardElement = tempDiv.querySelector('#cardToPrint');
-
-        // تحويل إلى Canvas بجودة عالية
-        const canvas = await html2canvas(cardElement, {
-          scale: 2.5,              // جودة ممتازة بدون تضخيم مبالغ
-          useCORS: true,
-          backgroundColor: '#ffffff'
-        });
-
-        document.body.removeChild(tempDiv);
-
-        // تحويل px → mm
-        const pxToMm = px => px * 0.264583;
-        const pdfWidth = pxToMm(canvas.width);
-        const pdfHeight = pxToMm(canvas.height);
-
-        const { jsPDF } = window.jspdf;
-
-        // إنشاء PDF بنفس حجم البطاقة (بدون A4)
-        const pdf = new jsPDF({
-          orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
-          unit: 'mm',
-          format: [pdfWidth, pdfHeight]
-        });
-
-        const imgData = canvas.toDataURL('image/png', 1.0);
-
-        // إضافة الصورة بدون أي هوامش
-        pdf.addImage(
-          imgData,
-          'PNG',
-          0,
-          0,
-          pdfWidth,
-          pdfHeight,
-          undefined,
-          'FAST'
-        );
-
-        pdf.save(`driver-card-${data.driver_card_number}.pdf`);
-        alert('تم التحميل بنجاح');
-
-      } catch (err) {
-        console.error(err);
-        alert('حدث خطأ أثناء توليد الملف');
-      }
-
-      submitBtn.textContent = originalText;
-      submitBtn.disabled = false;
+    if (!currentVerificationToken) {
+      alert("لم يتم إنشاء QR بعد");
+      return;
     }
 
-    // إغلاق المودال عند النقر خارجه
+    // تعبئة البيانات كاملة قبل إرسالها
+    const data = {
+      driver_name_ar: dataFromForm.driver_name_ar || "",
+      driver_name_en: dataFromForm.driver_name_en || "",
+      driver_id: dataFromForm.driver_id || "",
+      card_number: document.getElementById('driver_card_number').value || "",
+      verification_token: currentVerificationToken,
+      company_name_ar: dataFromForm.company_name_ar || "",
+      company_name_en: dataFromForm.company_name_en || "",
+      issue_date: document.getElementById('issue_date').value || "",
+      expiry_date: document.getElementById('expiry_date').value || "",
+      card_category_ar: "سنوي",
+      card_category_en: "Annual",
+      license_number: dataFromForm.license_number || "",
+      license_city_ar: dataFromForm.license_city_ar || "",
+      license_city_en: dataFromForm.license_city_en || "",
+      license_issue_date: document.getElementById('license_issue_date').value || "",
+      license_expiry_date: document.getElementById('license_expiry_date').value || "",
+      activity_type_ar: dataFromForm.activity_type_ar || "",
+      activity_type_en: dataFromForm.activity_type_en || "",
+      moi_number: dataFromForm.moi_number || dataFromForm.license_number || "",
+      qr_image_url: document.getElementById('qr_image_url').value || ""
+    };
+
+    // 1️⃣ إرسال البيانات للسيرفر
+    await apiRequest('cards', 'POST', data);
+    alert("تم حفظ البيانات بنجاح، جاري توليد PDF...");
+
+    // 2️⃣ إنشاء HTML البطاقة مؤقتًا
+    const cardHTML = generateCardHTML(data);
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = cardHTML;
+    tempDiv.style.position = 'fixed';
+    tempDiv.style.left = '-10000px';
+    tempDiv.style.top = '0';
+    document.body.appendChild(tempDiv);
+
+    const cardElement = tempDiv.querySelector('#cardToPrint');
+
+    // 3️⃣ الانتظار حتى تحميل كل الصور (خاصة QR وصورة الخلفية)
+    await Promise.all(Array.from(cardElement.querySelectorAll('img')).map(img => {
+      if (img.complete) return Promise.resolve();
+      return new Promise(resolve => img.onload = img.onerror = resolve);
+    }));
+
+    // 4️⃣ تحويل HTML إلى Canvas
+    const canvas = await html2canvas(cardElement, {
+      scale: 2.5,
+      useCORS: true,
+      backgroundColor: '#ffffff'
+    });
+
+    document.body.removeChild(tempDiv);
+
+    // 5️⃣ تحويل px إلى mm
+    const pxToMm = px => px * 0.264583;
+    const pdfWidth = pxToMm(canvas.width);
+    const pdfHeight = pxToMm(canvas.height);
+
+    const { jsPDF } = window.jspdf;
+
+    // 6️⃣ إنشاء PDF بنفس حجم البطاقة
+    const pdf = new jsPDF({
+      orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
+      unit: 'mm',
+      format: [pdfWidth, pdfHeight]
+    });
+
+    const imgData = canvas.toDataURL('image/png', 1.0);
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+
+    // 7️⃣ حفظ PDF
+    pdf.save(`driver-card-${data.card_number}.pdf`);
+    alert('تم تحميل البطاقة بنجاح');
+
+  } catch (err) {
+    console.error(err);
+    alert('حدث خطأ أثناء العملية: ' + err.message);
+  } finally {
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+  }
+}
+
+// إغلاق المودال عند النقر خارجه
     window.onclick = function (event) {
       const modal = document.getElementById('previewModal');
       if (event.target == modal) {
