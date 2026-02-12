@@ -19,7 +19,7 @@ class AuthController {
         
         // التحقق من وجود البيانات المطلوبة
         if (!isset($input['username']) || !isset($input['password'])) {
-            Response::error("Username and password required", 400);
+            Response::error("اسم المستخدم وكلمه المرور مطلوب", 400);
         }
 
         // المصادقة
@@ -53,6 +53,6 @@ class AuthController {
      */
     public static function logout(PDO $pdo, $token) {
         AuthHelper::logout($pdo, $token);
-        Response::success(['message' => 'Logged out successfully']);
+        Response::success(['message' => 'تم تسجيل الدخول بنجاح']);
     }
 }

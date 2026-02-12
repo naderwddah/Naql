@@ -4,6 +4,7 @@
  * يتعامل مع طلبات API المتعلقة بالبطاقات
  */
 
+require_once __DIR__ . '/../models/verify_templates/verify.php';
 require_once __DIR__ . '/../models/Card.php';
 require_once __DIR__ . '/../models/CardVerification.php';
 require_once __DIR__ . '/../helpers/Response.php';
@@ -36,7 +37,7 @@ class CardsController {
     public function list() {
         // التحقق من الصلاحية
         if (!$this->authUser || !in_array($this->authUser['role_id'], self::PERMISSIONS['view'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         $cards = $this->cardModel->getAll();
@@ -54,12 +55,12 @@ class CardsController {
     public function get($card_number) {
         // التحقق من الصلاحية
         if (!$this->authUser || !in_array($this->authUser['role_id'], self::PERMISSIONS['view'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         $card = $this->cardModel->getByCardNumber($card_number);
         if (!$card) {
-            Response::error("Card not found", 404);
+            Response::error("لايوجد بطاقة بهذا الرقم", 404);
         }
 
         Response::success(['card' => $card]);
@@ -72,7 +73,7 @@ class CardsController {
     public function create($data) {
         // التحقق من الصلاحية
         if (!$this->authUser || !in_array($this->authUser['role_id'], self::PERMISSIONS['create'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         // التحقق من الحقول المطلوبة
@@ -94,7 +95,7 @@ class CardsController {
             ], 201);
             
         } catch (Exception $e) {
-            Response::error("Failed to create card: " . $e->getMessage(), 500);
+            Response::error("فشل انشاء البطاقة " , 500);
         }
     }
 
@@ -110,15 +111,15 @@ class CardsController {
 
         $card_id = $data['card_id'] ?? null;
         if (!$card_id) {
-            Response::error("card_id is required", 400);
+            Response::error("معرف البطاقه مطلوب", 400);
         }
 
         try {
             $this->cardModel->update($card_id, $data);
             $this->logAction('update_card', $card_id);
-            Response::success(['message' => 'Card updated successfully']);
+            Response::success(['message' => 'تم تحديث البطاقة']);
         } catch (Exception $e) {
-            Response::error("Failed to update card: " . $e->getMessage(), 500);
+            Response::error("فشل تحديث البطاقة لسبب ما ", 500);
         }
     }
 
@@ -129,15 +130,15 @@ class CardsController {
     public function delete($card_id) {
         // التحقق من الصلاحية
         if (!$this->authUser || !in_array($this->authUser['role_id'], self::PERMISSIONS['delete'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         try {
             $this->cardModel->delete($card_id);
             $this->logAction('delete_card', $card_id);
-            Response::success(['message' => 'Card deleted successfully']);
+            Response::success(['message' => 'تم حذف البطاقة']);
         } catch (Exception $e) {
-            Response::error("Failed to delete card: " . $e->getMessage(), 500);
+            Response::error("فشل في حذف البطاقة: ", 500);
         }
     }
 
@@ -148,7 +149,7 @@ class CardsController {
     public function getByStatus($status_id) {
         // التحقق من الصلاحية
         if (!$this->authUser || !in_array($this->authUser['role_id'], self::PERMISSIONS['view'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         $stmt = $this->pdo->prepare("
@@ -171,13 +172,52 @@ class CardsController {
      */
     public function verify($token) {
         $card = $this->cardModel->verifyCard($token);
+        
         if (!$card) {
-            Response::error("Invalid verification token", 404);
+            Response::error("رمز التحقق غير صالح أو منتهي الصلاحية", 404);
         }
 
-        Response::success(['card' => $card]);
+        // التحقق من أن البطاقة نشطة
+        if ($card['status_id'] != 2) {
+            Response::error("هذه البطاقة غير نشطة", 403);
+        }
+        
+        Response::success([
+            'card' => [
+                'card_number' => $card['card_number'],
+                'status' => $card['status_name'],
+                'driver_name' => [
+                    'ar' => $card['driver_name_ar'],
+                    'en' => $card['driver_name_en']
+                ],
+                'company_name' => [
+                    'ar' => $card['company_name_ar'],
+                    'en' => $card['company_name_en']
+                ],
+                'issue_date' => $card['issue_date'],
+                'expiry_date' => $card['expiry_date'],
+                'driver_id' => $card['driver_id'],
+                'moi_number' => $card['moi_number'],
+                'verified_at' => date('Y-m-d H:i:s')
+            ]
+        ]);
     }
-
+    /**
+     * عرض صفحة التحقق HTML
+     */
+    public function showVerificationPage($token) {
+        $card = $this->cardModel->verifyCard($token);
+        
+        if (!$card) {
+            // عرض صفحة خطأ
+            // Response::error("رمز التحقق غير صالح أو منتهي الصلاحية",404);
+            showErrorPage("رمز التحقق غير صالح أو منتهي الصلاحية");
+            return;
+        }
+        
+        // عرض صفحة النجاح مع بيانات البطاقة
+        showSuccessPage($card);
+    }
     /**
      * تسجيل العملية في سجل التدقيق
      * @param string $action نوع العملية

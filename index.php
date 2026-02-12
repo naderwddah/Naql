@@ -3,6 +3,32 @@
  * الملف الرئيسي للنظام - نقطة الدخول الوحيدة
  * يدعم نظام Routing للمسارات المختلفة
  */
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/logs/error.log');
+
+set_exception_handler(function ($e) {
+    error_log($e);
+    http_response_code(500);
+    echo json_encode(["message" => "Internal server error"]);
+    exit;
+});
+
+set_error_handler(function ($severity, $message, $file, $line) {
+    error_log("Error: $message in $file on line $line");
+    http_response_code(500);
+    echo json_encode(["message" => "Internal server error"]);
+    exit;
+});
+
+register_shutdown_function(function () {
+    $error = error_get_last();
+    if ($error !== null) {
+        error_log(json_encode($error));
+    }
+});
 
 // تحميل ملفات الإعدادات الأساسية
 require_once __DIR__ . '/config/config.php';
@@ -33,13 +59,27 @@ if ($path === 'login' && $method === 'POST') {
 // ============================================
 // 2. التحقق من البطاقة (عام - بدون توكن)
 // ============================================
-    if ($path === 'verify' && $method === 'GET'){
-        if ($method === 'GET' && isset($_GET['token'])) {
-            $controller = new CardsController($pdo, null);
+
+if ($path === 'verify') {
+    $controller = new CardsController($pdo, null);
+    
+    if ($method === 'GET' && isset($_GET['token'])) {
+        // التحقق مما إذا كان الطلب يطلب JSON أم HTML
+        $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? '';
+        
+        if (strpos($acceptHeader, 'application/json') !== false) {
+            // طلب API - إرجاع JSON
             $controller->verify($_GET['token']);
         } else {
-            Response::error("Invalid request", 400);
-        }}
+            // طلب عادي - عرض صفحة HTML
+            $controller->showVerificationPage($_GET['token']);
+        }
+    } else {
+        Response::error("Invalid request", 400);
+    }
+    exit;
+}
+
 
 // ============================================
 // 3. التحقق من التوكن للمسارات المحمية
@@ -49,7 +89,8 @@ $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZ
 $token = str_replace('Bearer ', '', $authHeader);
 
 // جميع المسارات ماعدا login تحتاج توكن
-if (!in_array($path, ['login']) || !in_array($path, ['verify'])) {
+if (!in_array($path, ['login', 'verify'])) 
+{
     $authUser = AuthHelper::checkToken($pdo, $token);
 }
 
@@ -70,7 +111,7 @@ switch ($path) {
             case 'POST':   $controller->create($data); break;
             case 'PUT':    $controller->update($data); break;
             case 'DELETE': $controller->delete($data); break;
-            default:       Response::error("Method not allowed", 405);
+            default:       Response::error("الوضيفه غير موجوده", 405);
         }
         break;
 
@@ -78,6 +119,8 @@ switch ($path) {
     // الصلاحيات
     // ----------------------------
     case 'roles':
+        Response::error("الوضوضيفه غير مفعله حاليا (ممزة مستقبلية)", 405);
+        break;
         $controller = new RolesController($pdo, $authUser);
         $data = json_decode(file_get_contents('php://input'), true);
         
@@ -86,7 +129,7 @@ switch ($path) {
             case 'POST':   $controller->create($data); break;
             case 'PUT':    $controller->update($data); break;
             case 'DELETE': $controller->delete($data); break;
-            default:       Response::error("Method not allowed", 405);
+            default:       Response::error("الوضيفه غير موجوده", 405);
         }
         break;
 
@@ -94,6 +137,8 @@ switch ($path) {
     // حالات البطاقات
     // ----------------------------
     case 'statuses':
+        Response::error("الوضوضيفه غير مفعله حاليا (ممزة مستقبلية)", 405);
+        break;
         $controller = new StatusController($pdo, $authUser);
         $data = json_decode(file_get_contents('php://input'), true);
         
@@ -102,7 +147,7 @@ switch ($path) {
             case 'POST':   $controller->create($data); break;
             case 'PUT':    $controller->update($data); break;
             case 'DELETE': $controller->delete($data); break;
-            default:       Response::error("Method not allowed", 405);
+            default:       Response::error("الوضيفه غير موجوده", 405);
         }
         break;
 
@@ -143,13 +188,18 @@ switch ($path) {
                 break;
                 
             default:
-                Response::error("Method not allowed", 405);
+                Response::error("الوضيفه غير موجوده", 405);
         }
         break;
 
     // ----------------------------
     // مسار غير موجود
     // ----------------------------
+    case 'logout':
+        AuthController::logout($pdo,$token);
+
     default:
         Response::error("Invalid endpoint", 404);
 }
+
+?>

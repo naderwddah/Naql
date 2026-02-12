@@ -34,14 +34,14 @@ class RolesController {
      */
     public function create($data) {
         if ($this->authUser['role_id'] != 1) {
-            Response::error("Forbidden - Super admin only", 403);
+            Response::error("لايمكنك القيام بذالك يجب ترقيه صلاحيتك", 403);
         }
 
         $name = $data['name'] ?? null;
         $description = $data['description'] ?? null;
 
         if (!$name) {
-            Response::error("Role name required", 400);
+            Response::error("رقم الصلاحية مطلوب", 400);
         }
 
         try {
@@ -59,7 +59,7 @@ class RolesController {
             Response::success(['role_id' => $role_id], 201);
         } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
-                Response::error("Role name already exists", 409);
+                Response::error("رقم الصلاحية موجود", 409);
             }
             throw $e;
         }
@@ -70,14 +70,14 @@ class RolesController {
      */
     public function update($data) {
         if ($this->authUser['role_id'] != 1) {
-            Response::error("Forbidden - Super admin only", 403);
+            Response::error("لايمكنك القيام بذالك يجب ترقيه صلاحيتك", 403);
         }
 
         $role_id = $data['role_id'] ?? null;
         $name = $data['name'] ?? null;
 
         if (!$role_id || !$name) {
-            Response::error("role_id and name required", 400);
+            Response::error("معرف الصلاحيه ورقم الصلاحيه مطلوب", 400);
         }
 
         $description = $data['description'] ?? null;
@@ -94,7 +94,7 @@ class RolesController {
         ]);
 
         $this->logAction('update_role', $role_id);
-        Response::success(['message' => 'Role updated successfully']);
+        Response::success(['message' => 'تم تحديث الصلاحية']);
     }
 
     /**
@@ -102,7 +102,7 @@ class RolesController {
      */
     public function delete($data) {
         if ($this->authUser['role_id'] != 1) {
-            Response::error("Forbidden - Super admin only", 403);
+            Response::error("لايمكنك القيام بذالك يجب ترقيه صلاحيتك", 403);
         }
 
         $role_id = $data['role_id'] ?? null;
@@ -112,14 +112,14 @@ class RolesController {
 
         // منع حذف الصلاحيات الأساسية
         if (in_array($role_id, [1, 2, 3, 4])) {
-            Response::error("Cannot delete system roles", 403);
+            Response::error(" لايمكنك حذف صلاحيات النظام الاساسية", 403);
         }
 
         $stmt = $this->pdo->prepare("DELETE FROM roles WHERE role_id = :role_id");
         $stmt->execute(['role_id' => $role_id]);
 
         $this->logAction('delete_role', $role_id);
-        Response::success(['message' => 'Role deleted successfully']);
+        Response::success(['message' => 'تم حذف الصلاحيه']);
     }
 
     /**

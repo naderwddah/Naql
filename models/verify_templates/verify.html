@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تفاصيل بطاقة السائق</title>
+
+  <!-- خط Tajawal للعربية -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Tajawal', sans-serif;
+      background-color: #f0f0f0;
+      /* خلفية رمادية خارج الورقة */
+      padding: 20px;
+      direction: rtl;
+      min-height: 100vh;
+    }
+
+    /* العنوان الرئيسي - خارج الورقة */
+    .page-title {
+      color: #1a6b6b;
+      /* لون أخضر مائل للزرقة أغمق */
+      font-size: 22px;
+      font-weight: 700;
+      text-align: right;
+      padding-top: 10px;
+      max-width: 900px;
+      /* عرض أكبر من الارتفاع */
+      margin: 0 auto;
+      padding: 15px 15px;
+      position: relative;
+    }
+
+    /* الورقة البيضاء - بالعرض (Landscape) */
+    .paper-sheet {
+      max-width: 900px;
+      /* عرض أكبر من الارتفاع */
+      margin: 0 auto;
+      background: white;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 30px 40px;
+      position: relative;
+    }
+
+    /* الأقسام داخل الورقة */
+    .section {
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .section:last-of-type {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    /* عنوان القسم - لون أخضر مائل للزرقة */
+    .section-title {
+      color: #1a6b6b;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-align: right;
+    }
+
+    /* شبكة البيانات - عمودين */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px 30px;
+    }
+
+    .data-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .data-item.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .data-label {
+      color: #666;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .data-value {
+      color: #333;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    /* قسم بطاقة السائق - توزيع مختلف */
+    .card-section-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 15px 20px;
+    }
+
+    /* زر الرجوع - خارج الورقة */
+    .back-button-container {
+      text-align: left;
+      max-width: 900px;
+      /* عرض أكبر من الارتفاع */
+      margin: 0 auto;
+      padding: 10px 10px;
+      position: relative;
+    }
+
+    .back-button {
+      display: inline-block;
+      padding: 10px 30px;
+      background: white;
+      border: 1px solid #1a6b6b;
+      color: #1a6b6b;
+      font-size: 15px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Tajawal', sans-serif;
+      transition: all 0.3s ease;
+      min-width: 100px;
+    }
+
+    .back-button:hover {
+      background: #1a6b6b;
+      color: white;
+    }
+
+    /* للهاتف - تحويل للطول مع إمكانية التمرير */
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .page-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .paper-sheet {
+        padding: 20px;
+        overflow-x: auto;
+        /* تمرير أفقي للهاتف */
+      }
+
+      .data-grid {
+        grid-template-columns: 1fr;
+        min-width: 500px;
+        /* الحفاظ على عرض مناسب */
+      }
+
+      .card-section-grid {
+        grid-template-columns: 1fr 1fr;
+        min-width: 500px;
+      }
+
+      .section-title {
+        font-size: 14px;
+      }
+
+      .data-value {
+        font-size: 14px;
+      }
+    }
+  </style>
+  <base target="_blank">
+</head>
+
+<body>
+  <!-- العنوان خارج الورقة -->
+  <h1 class="page-title">تفاصيل بطاقة السائق</h1>
+
+  <!-- الورقة البيضاء -->
+  <div class="paper-sheet">
+    <div id="content">
+      <!-- سيتم ملء المحتوى بواسطة JavaScript -->
+    </div>
+  </div>
+
+  <!-- زر الرجوع خارج الورقة -->
+  <div class="back-button-container">
+    <button class="back-button" onclick="goBack()">رجوع</button>
+  </div>
+
+  <script>
+    // ==========================================
+    // البيانات - يمكن تغييرها بسهولة
+    // ==========================================
+
+    const CARD_DATA = {
+      // بيانات المنشأة/الفرد
+      establishment: {
+        id: "7009445573",                    // رقم هوية المنشأة
+        name: "شركة شفلوت التجارية المحدودة شركة شخص واحد"  // اسم المنشأة
+      },
+
+      // معلومات الترخيص الرئيسي
+      license: {
+        number: "11/00052782",              // رقم الترخيص
+        activityType: "النقل الثقيل للبضائع لأغراض تجارية (للغير - عربة منشآت)",  // نوع النشاط
+        city: "الرياض",                     // المدينة
+        issueDate: "1445/07/03",            // تاريخ الإصدار (هجري)
+        expiryDate: "1448/07/05"            // تاريخ الانتهاء (هجري)
+      },
+
+      // بطاقة السائق
+      driverCard: {
+        cardNumber: "11.00537649",          // رقم البطاقة
+        driverId: "2188235549",             // هوية السائق
+        familyName: "أول",                  // اسم العائلة
+        firstName: "عبد العلي",             // الاسم الأول
+        cardIssueDate: "2025-12-29",        // تاريخ إصدار البطاقة
+        cardExpiryDate: "2026-01-30",       // تاريخ انتهاء البطاقة
+        cardType: "النقل الثقيل للبضائع لأغراض تجارية (للغير - عربة منشآت)"  // نوع البطاقة
+      }
+    };
+
+    // ==========================================
+    // دوال العرض
+    // ==========================================
+
+    function renderPage() {
+      const content = document.getElementById('content');
+
+      content.innerHTML = `
+                <!-- القسم الأول: بيانات المنشأة/الفرد -->
+                <div class="section">
+                    <h2 class="section-title">بيانات المنشأة/الفرد</h2>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <span class="data-label">رقم هوية المنشأة</span>
+                            <span class="data-value">${CARD_DATA.establishment.id}</span>
+                        </div>
+                        <div class="data-item full-width">
+                            <span class="data-label">الاسم</span>
+                            <span class="data-value">${CARD_DATA.establishment.name}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- القسم الثاني: معلومات الترخيص الرئيسي -->
+                <div class="section">
+                    <h2 class="section-title">معلومات الترخيص الرئيسي</h2>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <span class="data-label">رقم الترخيص</span>
+                            <span class="data-value">${CARD_DATA.license.number}</span>
+                        </div>
+                        <div class="data-item full-width">
+                            <span class="data-label">نوع النشاط</span>
+                            <span class="data-value">${CARD_DATA.license.activityType}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">المدينة</span>
+                            <span class="data-value">${CARD_DATA.license.city}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">تاريخ الإصدار</span>
+                            <span class="data-value">${CARD_DATA.license.issueDate}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">تاريخ الانتهاء</span>
+                            <span class="data-value">${CARD_DATA.license.expiryDate}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- القسم الثالث: بطاقة السائق -->
+                <div class="section">
+                    <h2 class="section-title">بطاقة السائق</h2>
+                    <div class="card-section-grid">
+                        <div class="data-item">
+                            <span class="data-label">رقم البطاقة</span>
+                            <span class="data-value">${CARD_DATA.driverCard.cardNumber}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">هوية السائق</span>
+                            <span class="data-value">${CARD_DATA.driverCard.driverId}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">اسم العائلة</span>
+                            <span class="data-value">${CARD_DATA.driverCard.familyName}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">الاسم الأول</span>
+                            <span class="data-value">${CARD_DATA.driverCard.firstName}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">تاريخ إصدار البطاقة</span>
+                            <span class="data-value">${CARD_DATA.driverCard.cardIssueDate}</span>
+                        </div>
+                        <div class="data-item">
+                            <span class="data-label">تاريخ انتهاء البطاقة</span>
+                            <span class="data-value">${CARD_DATA.driverCard.cardExpiryDate}</span>
+                        </div>
+                        <div class="data-item" style="grid-column: 1 / -1;">
+                            <span class="data-label">نوع البطاقة</span>
+                            <span class="data-value">${CARD_DATA.driverCard.cardType}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    // قراءة معلمات URL
+    function getUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        cardId: params.get('card'),
+        token: params.get('token')
+      };
+    }
+
+    // عند تحميل الصفحة
+    document.addEventListener('DOMContentLoaded', function () {
+      const urlParams = getUrlParams();
+      console.log('URL Parameters:', urlParams);
+      renderPage();
+    });
+  </script>
+</body>
+
+</html>

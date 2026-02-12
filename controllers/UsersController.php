@@ -31,7 +31,7 @@ class UsersController {
      */
     public function list() {
         if (!in_array($this->authUser['role_id'], self::PERMISSIONS['view'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         $users = $this->userModel->getAll();
@@ -43,7 +43,7 @@ class UsersController {
      */
     public function create($data) {
         if (!in_array($this->authUser['role_id'], self::PERMISSIONS['create'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         $username = $data['username'] ?? null;
@@ -52,7 +52,7 @@ class UsersController {
         $fullName=$data['name'] ?? "";
 
         if (!$username || !$password) {
-            Response::error("Username and password required", 400);
+            Response::error("اسم المستخدم وكلمه المرور مطلوبتان", 400);
         }
 
         try {
@@ -61,7 +61,7 @@ class UsersController {
             Response::success(['user_id' => $user_id], 201);
         } catch (PDOException $e) {
             if ($e->errorInfo[1] == 1062) {
-                Response::error("Username already exists", 409);
+                Response::error("اسم المستخدم موجود سابقا", 409);
             }
             throw $e;
         }
@@ -72,37 +72,37 @@ class UsersController {
 
      public function update($data) {
         if (!in_array($this->authUser['role_id'], self::PERMISSIONS['update'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         $user_id = $data['user_id'] ?? null;
 
         if (!$user_id) {
-            Response::error("user_id required", 400);
+            Response::error("معرف المستخدم مطلوب", 400);
         }
 
         $this->userModel->update($user_id, $data['fullName']??null, $data['username']??null, $data['role_id']??null, $data['is_active']??null,$data['password']??null);
         $this->logAction('update_user', $user_id);
-        Response::success(['message' => 'User updated successfully']);
+        Response::success(['message' => 'تم تحديث المستخدم']);
     }
     /**
      * تحديث كلمة مرور مستخدم
      */
     public function updatePassword($data) {
         if (!in_array($this->authUser['role_id'], self::PERMISSIONS['update'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         $user_id = $data['user_id'] ?? null;
         $password = $data['password'] ?? null;
 
         if (!$user_id || !$password) {
-            Response::error("user_id and password required", 400);
+            Response::error("اسم المستخدم وكلمه المرور مطلوب", 400);
         }
 
         $this->userModel->updatePassword($user_id, $password);
         $this->logAction('update_user', $user_id);
-        Response::success(['message' => 'User updated successfully']);
+        Response::success(['message' => 'تم تحديث المستخدم']);
     }
 
     /**
@@ -110,22 +110,22 @@ class UsersController {
      */
     public function delete($data) {
         if (!in_array($this->authUser['role_id'], self::PERMISSIONS['delete'])) {
-            Response::error("Forbidden", 403);
+            Response::error("ممنوع", 403);
         }
 
         $user_id = $data['user_id'] ?? null;
         if (!$user_id) {
-            Response::error("user_id required", 400);
+            Response::error("معرف المستخدم مطلوب", 400);
         }
 
         // منع حذف الحساب نفسه
         if ($user_id == $this->authUser['user_id']) {
-            Response::error("Cannot delete your own account", 403);
+            Response::error("لايمكنك حذف الحساب نفسة الذي تستخدمه", 403);
         }
 
         $this->userModel->delete($user_id);
         $this->logAction('delete_user', $user_id);
-        Response::success(['message' => 'User deleted successfully']);
+        Response::success(['message' => 'تم حذف الحساب']);
     }
 
     /**
