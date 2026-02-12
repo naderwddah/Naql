@@ -1,4 +1,6 @@
-
+// ==========================================
+// ملف: login.js (مُحدّث للعمل مع API التوثيق)
+// ==========================================
 
 // إخفاء مؤشر التحميل
 window.addEventListener("load", () => {
@@ -7,6 +9,9 @@ window.addEventListener("load", () => {
     if (loader) loader.classList.add("hidden");
   }, 500);
 });
+
+// ✅ التعديل 1: رابط API مطابق للتوثيق (بدون / في النهاية)
+const API_BASE_URL = "http://localhost/driver_cards/v1";
 
 // العناصر
 const form = document.getElementById("loginForm");
@@ -31,19 +36,15 @@ function showMessage(type, title, text) {
   };
 
   messageDiv.innerHTML = `
-        <i class="fas ${icons[type] || "fa-info-circle"}"></i>
-        <div>
-            <div style="font-weight: 700; margin-bottom: 4px;">${title}</div>
-            ${
-              text
-                ? `<div style="font-size: 13px; opacity: 0.9;">${text}</div>`
-                : ""
-            }
-        </div>
-    `;
+    <i class="fas ${icons[type] || "fa-info-circle"}"></i>
+    <div>
+      <div style="font-weight: 700; margin-bottom: 4px;">${title}</div>
+      ${text ? `<div style="font-size: 13px; opacity: 0.9;">${text}</div>` : ""}
+    </div>
+  `;
 
   messageContainer.appendChild(messageDiv);
-  void messageDiv.offsetWidth; // إعادة رسم للأنيميشن
+  void messageDiv.offsetWidth;
   messageDiv.classList.add("show");
 
   if (type === "success") {
@@ -64,17 +65,14 @@ function clearMessages() {
 // إظهار/إخفاء كلمة المرور
 togglePasswordBtn.addEventListener("click", () => {
   const type =
-    passwordInput.getAttribute("type") === "password"
-      ? "text"
-      : "password";
+    passwordInput.getAttribute("type") === "password" ? "text" : "password";
   passwordInput.setAttribute("type", type);
   const icon = togglePasswordBtn.querySelector("i");
-  icon.className =
-    type === "password" ? "fas fa-eye" : "fas fa-eye-slash";
+  icon.className = type === "password" ? "fas fa-eye" : "fas fa-eye-slash";
   passwordInput.focus();
 });
 
-// التحقق من صحة المدخلات (فقط التأكد من أن الحقول ليست فارغة)
+// التحقق من صحة المدخلات
 function validateField(input, hintId) {
   const hint = document.getElementById(hintId);
   const value = input.value.trim();
@@ -92,10 +90,10 @@ function validateField(input, hintId) {
 }
 
 usernameInput.addEventListener("input", () =>
-  validateField(usernameInput, "usernameHint")
+  validateField(usernameInput, "usernameHint"),
 );
 passwordInput.addEventListener("input", () =>
-  validateField(passwordInput, "passwordHint")
+  validateField(passwordInput, "passwordHint"),
 );
 
 [usernameInput, passwordInput].forEach((input) => {
@@ -115,7 +113,7 @@ loginBtn.addEventListener("click", function (e) {
   setTimeout(() => ripple.remove(), 600);
 });
 
-// ===== الاتصال بـ API ومعالجة تسجيل الدخول =====
+// ===== الاتصال بـ API ومعالجة تسجيل الدخول (مُحدّث) =====
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
   clearMessages();
@@ -128,7 +126,7 @@ form.addEventListener("submit", async (e) => {
     showMessage(
       "error",
       "بيانات ناقصة",
-      "يرجى إدخال اسم المستخدم وكلمة المرور"
+      "يرجى إدخال اسم المستخدم وكلمة المرور",
     );
     if (username.length < 3) usernameInput.classList.add("error");
     if (password.length < 3) passwordInput.classList.add("error");
@@ -139,68 +137,66 @@ form.addEventListener("submit", async (e) => {
   loginBtn.classList.add("loading");
   loginBtn.disabled = true;
 
-  // إعداد البيانات للإرسال
-  const requestData = {
-    username: username,
-    password: password,
-  };
-
   try {
-    // استبدل الرابط أدناه برابط ملف الـ API الخاص بك
-    // مثال: 'https://example.com/api/login.php'
-    const apiUrl = "api/login.php";
-
-    const response = await fetch(apiUrl, {
+    // ✅ التعديل 2: استخدام الرابط الصحيح /login
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify(requestData),
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      }),
     });
 
-    // قراءة الرد من السيرفر
     const result = await response.json();
 
-    if (response.ok && result.success) {
-      // ===== حالة النجاح =====
-      // الافتراض أن السيرفر يعيد كائن JSON يحتوي على: success: true, token: "xyz", message: "..."
+    // ✅ التعديل 3: التحقق من success حسب التوثيق
+    if (result.success === true) {
+      showMessage("success", "تم تسجيل الدخول", "جاري تحويلك للوحة التحكم...");
 
-      showMessage(
-        "success",
-        "تم تسجيل الدخول",
-        result.message || "جاري تحويلك..."
-      );
-
-      // حفظ التوكن والبيانات
+      // ✅ التعديل 4: تحديد مكان التخزين
       const storage = rememberMeCheckbox.checked
         ? localStorage
         : sessionStorage;
 
-      // تخزين التوكن القادم من قاعدة البيانات
+      // ✅ التعديل 5: حفظ التوكن (Bearer Token)
       if (result.token) {
         storage.setItem("authToken", result.token);
       }
-      storage.setItem("currentUser", username);
+
+      // ✅ التعديل 6: حفظ بيانات المستخدم كاملة (user_id, username, role_id)
+      if (result.user) {
+        storage.setItem("userData", JSON.stringify(result.user));
+
+        // ✅ إضافة: حفظ role_id منفصلاً للاستخدام السريع في التحقق من الصلاحيات
+        if (result.user.role_id) {
+          storage.setItem("userRoleId", result.user.role_id);
+        }
+      }
+
+      // ✅ إضافة: حفظ حالة "تذكرني"
+      if (rememberMeCheckbox.checked) {
+        localStorage.setItem("rememberMe", "true");
+      }
 
       setTimeout(() => {
-        window.location.href = "dashboard.html"; // توجيه المستخدم
+        window.location.href = "./assets/pages/dashboard.html";
       }, 1500);
     } else {
-      // ===== حالة الفشل =====
-      throw new Error(result.message || "حدث خطأ أثناء الاتصال");
+      // ✅ التعديل 7: استخدام مفتاح 'error' من الرد
+      throw new Error(result.error || "بيانات الدخول غير صحيحة");
     }
   } catch (error) {
-    // التعامل مع الأخطاء (شبكة أو بيانات خاطئة)
     loginBtn.classList.remove("loading");
     loginBtn.disabled = false;
 
     console.error("Login Error:", error);
-
-    // إظهار رسالة الخطأ القادمة من السيرفر أو رسالة عامة
     showMessage("error", "فشل تسجيل الدخول", error.message);
 
-    // اهتزاز البطاقة كإشارة بصرية
+    // تأثير الاهتزاز
     const card = document.querySelector(".login-card");
     if (card) {
       card.style.animation = "shake 0.5s ease";
@@ -208,6 +204,54 @@ form.addEventListener("submit", async (e) => {
     }
   }
 });
+
+// ✅ إضافة: التحقق من وجود توكن سابق عند تحميل الصفحة
+window.addEventListener("DOMContentLoaded", () => {
+  const token =
+    localStorage.getItem("authToken") || sessionStorage.getItem("authToken");
+  const rememberMe = localStorage.getItem("rememberMe");
+
+  // إذا كان هناك توكن و"تذكرني" مفعل، نحوله مباشرة للـ Dashboard
+  if (token && rememberMe === "true") {
+    // التحقق من صلاحية التوكن أولاً (اختياري)
+    validateTokenAndRedirect(token);
+  }
+});
+
+// ✅ إضافة: دالة للتحقق من صلاحية التوكن
+async function validateTokenAndRedirect(token) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/cards`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      // التوكن صالح، تحويل المستخدم
+      window.location.href = "dashboard.html";
+    } else {
+      // التوكن منتهي، مسح البيانات
+      clearAuthData();
+    }
+  } catch (error) {
+    console.error("Token validation error:", error);
+    clearAuthData();
+  }
+}
+
+// ✅ إضافة: دالة لمسح بيانات المصادقة
+function clearAuthData() {
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("userData");
+  localStorage.removeItem("userRoleId");
+  localStorage.removeItem("rememberMe");
+  sessionStorage.removeItem("authToken");
+  sessionStorage.removeItem("userData");
+  sessionStorage.removeItem("userRoleId");
+}
 
 // اختصارات لوحة المفاتيح
 document.addEventListener("keydown", (e) => {
@@ -219,17 +263,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// منع النسخ في حقل كلمة المرور
 passwordInput.addEventListener("copy", (e) => {
   e.preventDefault();
   showMessage("warning", "تنبيه أمني", "نسخ كلمة المرور غير مسموح به");
 });
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/assets/PWA/service-worker.js")
-      .then(() => console.log("PWA Service Worker registered"))
-      .catch((err) => console.error("Service Worker error:", err));
-  });
-}

@@ -1,0 +1,26 @@
+{
+  "name": "Driver Card System",
+  "short_name": "DriverCard",
+  "description": "Internal system for issuing driver cards",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#6B1C24",
+  "theme_color": "#6B1C24",
+  "orientation": "portrait",
+  "lang": "ar",
+  "icons": [
+    {
+      "src": "./assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -19,7 +19,9 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
+
     <link rel="stylesheet" href="../css/dashboard.css" />
+
   </head>
   <body id="dashboard-page">
     <!-- Mobile Overlay -->
@@ -1096,7 +1098,7 @@
         }, 3000);
       }
 
-      function logout() {
+      async function logout() {
         if (confirm("هل تريد تسجيل الخروج؟")) {
           localStorage.removeItem("authToken");
           localStorage.removeItem("userData");
@@ -1104,8 +1106,23 @@
           sessionStorage.removeItem("authToken");
           sessionStorage.removeItem("userData");
           sessionStorage.removeItem("userRoleId");
-          window.location.href = "index.html";
+          const response = await fetch(`${API_BASE_URL}/logout`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            }
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showToast(
+              "success",
+              "تم تسجيل الخروج",result.message
+            );
         }
+      }
       }
 
       function showNotifications() {

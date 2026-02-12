@@ -1,0 +1,126 @@
+:root {
+  /* الألوان الأساسية - موحدة */
+  --primary: #8b3c45;
+  --primary-dark: #6b1c24;
+  --primary-darker: #4a1219;
+  --primary-light: #a84d57;
+  --primary-gradient: linear-gradient(135deg, #8b3c45 0%, #a84d57 100%);
+  
+  /* الألوان الوظيفية - دمج المسميات لضمان التوافق /
+  --success: #2e7d32;
+  --success-light: #e8f5e9;
+  --warning: #f9a825;
+  --warning-light: #fff9c4;
+  --error: #c62828;      / للملف الأول /
+  --danger: #ef4444;     / للملف الثاني */
+  --danger-light: #fee2e2;
+  --info: #1565c0;
+  --info-light: #e3f2fd;
+  
+  /* ألوان الواجهة - تم اختيار الألوان الأكثر حداثة */
+  --bg: #f5f7fa;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --sidebar-bg: #1e293b;
+  --text-primary: #1a1a1a;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --border: #e2e8f0;
+  
+  /* الظلال والتأثيرات */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 0 4px rgba(139, 60, 69, 0.15);
+  
+  /* الحواف */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  
+  /* الانتقالات */
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s ease;
+  }
+  
+  /* الوضع الليلي الموحد */
+  @media (prefers-color-scheme: dark) {
+  :root {
+  --primary: #a84d57;
+  --primary-dark: #8b3c45;
+  --primary-darker: #6b1c24;
+  --primary-light: #c46b75;
+  
+  --success: #4caf50;
+  --success-light: #1b3a1c;
+  --warning: #ffd54f;
+  --warning-light: #3a3000;
+  --error: #ef5350;
+  --danger: #f87171;
+  --danger-light: #450a0a;
+  --info: #64b5f6;
+  --info-light: #0d283c;
+  
+  --bg: #0f0f0f;
+  --card-bg: rgba(30, 20, 22, 0.95);
+  --text-primary: #e8e8e8;
+  --text-secondary: #b0b0b0;
+  --text-muted: #808080;
+  --border: rgba(255, 255, 255, 0.1);
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+  
+  
+  }
+  }
+  
+  /* التنسيقات العامة */
+  
+*  {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  }
+  
+  body {
+  font-family: "Tajawal", sans-serif;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text-primary);
+  display: flex;
+  justify-content: center; /* لضمان توسط المحتوى /
+  align-items: center;     / لضمان توسط المحتوى */
+  transition: background var(--transition-slow), color var(--transition-slow);
+  position: relative;
+  overflow-x: hidden;
+  }
+  
+  /* الخلفية المتحركة المدمجة */
+  body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 0% 0%, rgba(139, 60, 69, 0.1) 0%, transparent 50%),
+  radial-gradient(circle at 100% 100%, rgba(139, 60, 69, 0.05) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+  animation: bgPulse 10s ease-in-out infinite;
+  }
+  
+  @keyframes bgPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+  }
+  
+  @media (prefers-color-scheme: dark) {
+  body::before {
+  background: radial-gradient(circle at 0% 0%, rgba(168, 77, 87, 0.15) 0%, transparent 50%),
+  radial-gradient(circle at 100% 100%, rgba(168, 77, 87, 0.08) 0%, transparent 50%);
+  }
+  }
