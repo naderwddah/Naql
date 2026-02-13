@@ -1,575 +1,582 @@
-/* ================= PDF SCOPE (عزل كامل) ================= */
-.pdf-scope {
-  all: initial;
-  font-family: "Tajawal", "Roboto", sans-serif;
-}
+  /* ================= PDF SCOPE (عزل كامل) ================= */
+  .pdf-scope {
+    all: initial;
+    font-family: "Tajawal", "Roboto", sans-serif;
+  }
 
-/* ================= PAGE / CARD ================= */
-.pdf-scope .card-preview {
-  width: 555pt;
-  height: 802pt;
-  background: #ffffff;
-  position: relative;
-  overflow: hidden;
-  margin: 0;
-}
+  /* ================= PAGE / CARD ================= */
+  .pdf-scope .card-preview {
+    width: 555pt;
+    height: 802pt;
+    background: #ffffff;
+    position: relative;
+    overflow: hidden;
+    margin: 0;
+  }
 
-/* ================= BACKGROUND ================= */
-.pdf-scope .card-bg-placeholder {
-  position: absolute;
-  inset: 0;
-  background-color: #f8f8f8;
-  z-index: 0;
-}
+  /* ================= BACKGROUND ================= */
+  .pdf-scope .card-bg-placeholder {
+    position: absolute;
+    inset: 0;
+    background-color: #f8f8f8;
+    z-index: 0;
+  }
 
-.pdf-scope .bg-img,
-.pdf-scope .card-bg-img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
+  .pdf-scope .bg-img,
+  .pdf-scope .card-bg-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
 
-/* ================= CONTENT LAYER ================= */
-.pdf-scope .card-content {
-  position: relative;
-  z-index: 1;
-  padding: 0 45pt;
-}
+  /* ================= CONTENT LAYER ================= */
+  .pdf-scope .card-content {
+    position: relative;
+    z-index: 1;
+    padding: 0 45pt;
+  }
 
-/* ================= HEADER ================= */
-.pdf-scope .card-header {
-  position: absolute;
-  top: 95pt;
-  left: 0;
-  right: 0;
-  text-align: center;
-  color: #8B2B3E;
-  z-index: 10;
-}
+  /* ================= HEADER ================= */
+  .pdf-scope .card-header {
+    position: absolute;
+    top: 95pt;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #8B2B3E;
+    z-index: 10;
+  }
 
-.pdf-scope .card-header h1 {
-  margin: 0;
-  font-size: 18pt;
-  font-weight: 700;
-  line-height: 1.2;
-}
+  .pdf-scope .card-header h1 {
+    margin: 0;
+    font-size: 18pt;
+    font-weight: 700;
+    line-height: 1.2;
+  }
 
-.pdf-scope .card-header p {
-  margin: 4pt 0 0;
-  font-size: 11pt;
-  font-family: "Roboto";
-  font-weight: 500;
-  color: #707070;
-}
+  .pdf-scope .card-header p {
+    margin: 4pt 0 0;
+    font-size: 11pt;
+    font-family: "Roboto";
+    font-weight: 500;
+    color: #707070;
+  }
 
-/* ================= QR ================= */
-.pdf-scope .card-qr {
-  position: absolute;
-  top: 75pt;
-  left: 60pt;
-  width: 75pt;
-  height: 75pt;
-  z-index: 10;
-  background: #fff;
-  padding: 4px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
+  /* ================= QR ================= */
+  .pdf-scope .card-qr {
+    position: absolute;
+    top: 75pt;
+    left: 60pt;
+    width: 75pt;
+    height: 75pt;
+    z-index: 10;
+    background: #fff;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
 
-/* ================= SECTIONS ================= */
-.pdf-scope .card-section {
-  margin-top: 170pt;
-}
+  /* ================= SECTIONS ================= */
+  .pdf-scope .card-section {
+    margin-top: 170pt;
+  }
 
-.pdf-scope .card-section+.card-section {
-  margin-top: 30pt;
-}
+  .pdf-scope .card-section+.card-section {
+    margin-top: 30pt;
+  }
 
-.pdf-scope .card-section-title {
-  background: #ffffff;
-  padding: 10pt 45pt;
-  margin: 0 -45pt;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #8B2B3E;
-  font-weight: 700;
-  font-size: 14pt;
-}
+  .pdf-scope .card-section-title {
+    background: #ffffff;
+    padding: 10pt 45pt;
+    margin: 0 -45pt;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #8B2B3E;
+    font-weight: 700;
+    font-size: 14pt;
+  }
 
-.pdf-scope .card-section-body {
-  background: #f3f4f6;
-  padding: 25pt 45pt;
-  margin: 0 -45pt;
-}
+  .pdf-scope .card-section-body {
+    background: #f3f4f6;
+    padding: 25pt 45pt;
+    margin: 0 -45pt;
+  }
 
-/* ================= GRID ================= */
-.pdf-scope .card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14pt 30pt;
-}
+  /* ================= GRID ================= */
+  .pdf-scope .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14pt 30pt;
+  }
 
-/* ================= ROW ================= */
+  /* ================= ROW ================= */
+  .pdf-scope .card-row {
+    position: relative;
+    min-height: 20pt;
+    font-size: 11pt;
+    line-height: 1.7;
+  }
+
+  /* ================= LABEL / VALUE ================= */
+/* OVERRIDE نهائي داخل pdf-scope */
 .pdf-scope .card-row {
-  position: relative;
-  min-height: 20pt;
-  font-size: 11pt;
-  line-height: 1.7;
-}
-
-/* ================= LABEL / VALUE ================= */
-.pdf-scope .card-label {
-  position: absolute;
-  inset-inline-start: 0;
-  color: #707070;
-  font-weight: 400;
-  white-space: nowrap;
+  position: static;   /* إلغاء relative */
+  display: flex;
+  align-items: flex-start;
+  gap: 8pt;
 }
 
 .pdf-scope .card-value {
-  position: absolute;
-  inset-inline-start: 140px;
-  font-weight: 500;
-  color: #000;
-  white-space: nowrap;
-}
-
-.pdf-scope .card-value-ar {
-  direction: rtl;
-  text-align: right;
-}
-
-.pdf-scope .card-value-en {
-  direction: ltr;
-  text-align: left;
-}
-
-.pdf-scope .card-ltr {
-  direction: ltr;
-  font-family: "Roboto";
-}
-
-/* ================= FOOTER ================= */
-.pdf-scope .card-footer {
-  position: absolute;
-  bottom: 45pt;
-  left: 45pt;
-  right: 45pt;
-  display: flex;
-  justify-content: space-between;
-  font-size: 8pt;
-  line-height: 1.6;
-  color: #333;
-  z-index: 2;
-}
-
-.pdf-scope .card-footer div {
-  width: 48%;
-}
-/* تنسيقات الصفحة الأساسية */
-body {
-  font-family: 'Tajawal', sans-serif;
-  background-color: #f4f4f4;
-  margin: 0;
-  padding: 20px;
-  color: #333;
-}
-
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  background: white;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-h2.page-title {
-  text-align: center;
-  color: #8B3C45;
-  font-size: 24px;
-  margin-bottom: 30px;
-  border-bottom: 2px solid #8B3C45;
-  padding-bottom: 10px;
-}
-
-.section-title {
-  background-color: #8B3C45;
-  color: white;
-  padding: 10px 15px;
-  font-size: 16px;
-  margin-top: 30px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin-top: 20px;
-}
-
-.full-width {
-  grid-column: 1 / -1;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-label {
-  font-size: 13px;
-  font-weight: 500;
-  color: #555;
-}
-
-input,
-select {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 14px;
-  transition: border-color 0.3s;
-}
-
-input:focus,
-select:focus {
-  border-color: #8B3C45;
-  outline: none;
-}
-
-/* أزرار الإجراءات */
-.actions {
-  display: flex;
-  gap: 15px;
-  margin-top: 40px;
-}
-
-.btn {
+  position: static;   /* إلغاء absolute */
   flex: 1;
-  padding: 12px 30px;
-  font-size: 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  font-family: 'Tajawal', sans-serif;
-  border: none;
-  color: white;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
-.btn-preview {
-  background-color: #555;
-}
 
-.btn-preview:hover {
-  background-color: #333;
-}
-
-.btn-submit {
-  background-color: #8B3C45;
-}
-
-.btn-submit:hover {
-  background-color: #703038;
-}
-
-/* معاينة QR */
-.qr-preview-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px dashed #ccc;
-  padding: 15px;
-  border-radius: 8px;
-  margin-top: 20px;
-  background-color: #f9f9f9;
-}
-
-.qr-preview-img {
-  width: 100px;
-  height: 100px;
-  margin-top: 10px;
-  object-fit: contain;
-}
-
-.en-input {
-  font-family: 'Roboto', sans-serif;
-  direction: ltr;
-  text-align: left;
-}
-
-/* تنسيقات النافذة المنبثقة (Modal) للمعاينة */
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-  /* استخدام flexbox للتوسيط */
-  align-items: center;
-  justify-content: center;
-  overflow: auto;
-  padding: 20px;
-}
-
-.modal-content {
-  background-color: #fefefe;
-  padding: 40px;
-  border-radius: 12px;
-  position: relative;
-  /* إزالة max-width للسماح للبطاقة بأخذ حجمها الطبيعي */
-  max-width: none;
-  width: auto;
-  display: inline-block;
-  margin: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-}
-
-.close-modal {
-  position: absolute;
-  top: -15px;
-  right: -15px;
-  color: #333;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 1001;
-  background: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  border: 2px solid #ddd;
-}
-
-.close-modal:hover {
-  color: #8B3C45;
-  background: #f0f0f0;
-  border-color: #8B3C45;
-}
-
-.preview-container {
-  /* إزالة التصغير - عرض البطاقة بحجمها الطبيعي */
-  transform: none;
-  transform-origin: center center;
-  padding: 0;
-  margin: 0;
-  border: none;
-  overflow: visible;
-}
-
-/* للشاشات الصغيرة: إضافة تصغير متناسب */
-@media (max-width: 1000px) {
-  .modal-content {
-    transform: scale(0.85);
-    transform-origin: center center;
+  .pdf-scope .card-value-ar {
+    direction: rtl;
+    text-align: right;
   }
-}
 
-@media (max-width: 800px) {
-  .modal-content {
-    transform: scale(0.7);
-    transform-origin: center center;
+  .pdf-scope .card-value-en {
+    direction: ltr;
+    text-align: left;
   }
-}
 
-@media (max-width: 600px) {
-  .modal-content {
-    transform: scale(0.39);
-    transform-origin: center center;
+  .pdf-scope .card-ltr {
+    direction: ltr;
+    font-family: "Roboto";
   }
-}
 
+  /* ================= FOOTER ================= */
+  .pdf-scope .card-footer {
+    position: absolute;
+    bottom: 0pt;
+    left: 45pt;
+    right: 45pt;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+    line-height: 1.6;
+    color: #333;
+    z-index: 2;
+    font-size: 8pt;
+    font-weight: bold;
+  }
 
+  .pdf-scope .card-footer div {
+    width: 48%;
+  }
+  /* تنسيقات الصفحة الأساسية */
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  h2.page-title {
+    text-align: center;
+    color: #8B3C45;
+    font-size: 24px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #8B3C45;
+    padding-bottom: 10px;
+  }
+
+  .section-title {
+    background-color: #8B3C45;
+    color: white;
+    padding: 10px 15px;
+    font-size: 16px;
+    margin-top: 30px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #555;
+  }
+
+  input,
+  select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color 0.3s;
+  }
+
+  input:focus,
+  select:focus {
+    border-color: #8B3C45;
+    outline: none;
+  }
+
+  /* أزرار الإجراءات */
+  .actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 40px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 12px 30px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Tajawal', sans-serif;
+    border: none;
+    color: white;
+  }
+
+  .btn-preview {
+    background-color: #555;
+  }
+
+  .btn-preview:hover {
+    background-color: #333;
+  }
+
+  .btn-submit {
+    background-color: #8B3C45;
+  }
+
+  .btn-submit:hover {
+    background-color: #703038;
+  }
+
+  /* معاينة QR */
+  .qr-preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px dashed #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    background-color: #f9f9f9;
+  }
+
+  .qr-preview-img {
+    width: 100px;
+    height: 100px;
+    margin-top: 10px;
+    object-fit: contain;
+  }
+
+  .en-input {
+    font-family: 'Roboto', sans-serif;
+    direction: ltr;
+    text-align: left;
+  }
+
+  /* تنسيقات النافذة المنبثقة (Modal) للمعاينة */
+
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    /* استخدام flexbox للتوسيط */
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    padding: 20px;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    padding: 40px;
+    border-radius: 12px;
+    position: relative;
+    /* إزالة max-width للسماح للبطاقة بأخذ حجمها الطبيعي */
+    max-width: none;
+    width: auto;
+    display: inline-block;
+    margin: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .close-modal {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    color: #333;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+    background: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    border: 2px solid #ddd;
+  }
+
+  .close-modal:hover {
+    color: #8B3C45;
+    background: #f0f0f0;
+    border-color: #8B3C45;
+  }
+
+  .preview-container {
+    /* إزالة التصغير - عرض البطاقة بحجمها الطبيعي */
+    transform: none;
+    transform-origin: center center;
+    padding: 0;
+    margin: 0;
+    border: none;
+    overflow: visible;
+  }
+
+  /* للشاشات الصغيرة: إضافة تصغير متناسب */
+  @media (max-width: 1000px) {
+    .modal-content {
+      transform: scale(0.85);
+      transform-origin: center center;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .modal-content {
+      transform: scale(0.7);
+      transform-origin: center center;
+    }
+  }
 
   @media (max-width: 600px) {
-    .form-grid {
-      grid-template-columns: 1fr;
+    .modal-content {
+      transform: scale(0.39);
+      transform-origin: center center;
     }
-
-    .container {
-      padding: 10px;
-    }
-
-    
   }
 
-/* ================= CARD PREVIEW STYLES ================= */
-.card-preview {
-  width: 555pt;
-  height: 802pt;
-  background: #fff;
-  position: relative;
-  overflow: hidden;
-  margin: 0 auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
 
-.card-bg-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 0;
-}
 
-.card-content {
-  position: relative;
-  z-index: 1;
-  padding: 0 45pt;
-}
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
 
-.card-header {
-  position: absolute;
-  top: 95pt;
-  left: 0;
-  right: 0;
-  text-align: center;
-  color: #8B2B3E;
-  z-index: 10;
-}
+      .container {
+        padding: 10px;
+      }
 
-.card-header h1 {
-  margin: 0;
-  font-size: 18pt;
-  font-weight: 700;
-  line-height: 1.2;
-}
+      
+    }
 
-.card-header p {
-  margin: 4pt 0 0 0;
-  font-size: 11pt;
-  font-family: "Roboto";
-  font-weight: 500;
-  color: #707070;
-}
+  /* ================= CARD PREVIEW STYLES ================= */
+  .card-preview {
+    width: 555pt;
+    height: 802pt;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
 
-.card-qr {
-  position: absolute;
-  top: 75pt;
-  left: 60pt;
-  width: 75pt;
-  height: 75pt;
-  z-index: 10;
-  background: white;
-  padding: 4px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
+  .card-bg-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
 
-.card-section {
-  margin-top: 170pt;
-}
+  .card-content {
+    position: relative;
+    z-index: 1;
+    padding: 0 45pt;
+  }
 
-.card-section+.card-section {
-  margin-top: 30pt;
-}
+  .card-header {
+    position: absolute;
+    top: 95pt;
+    left: 0;
+    right: 0;
+    text-align: center;
+    color: #8B2B3E;
+    z-index: 10;
+  }
 
-.card-section-title {
-  background: #fff;
-  padding: 10pt 45pt;
-  margin: 0 -45pt;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #8B2B3E;
-  font-weight: 700;
-  font-size: 14pt;
-}
+  .card-header h1 {
+    margin: 0;
+    font-size: 18pt;
+    font-weight: 700;
+    line-height: 1.2;
+  }
 
-.card-section-body {
-  background: #f3f4f6;
-  padding: 25pt 45pt;
-  margin: 0 -45pt;
-}
+  .card-header p {
+    margin: 4pt 0 0 0;
+    font-size: 11pt;
+    font-family: "Roboto";
+    font-weight: 500;
+    color: #707070;
+  }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14pt 30pt;
-}
+  .card-qr {
+    position: absolute;
+    top: 75pt;
+    left: 60pt;
+    width: 75pt;
+    height: 75pt;
+    z-index: 10;
+    background: white;
+    padding: 4px;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
 
-.card-row {
-  position: relative;
-  min-height: 20pt;
-  font-size: 11pt;
-  line-height: 1.7;
-}
+  .card-section {
+    margin-top: 170pt;
+  }
 
-.card-label {
-  position: absolute;
-  inset-inline-start: 0;
-  color: #707070;
-  font-weight: 400;
-  white-space: nowrap;
-}
+  .card-section+.card-section {
+    margin-top: 30pt;
+  }
 
-.card-value {
-  position: absolute;
-  inset-inline-start: 140px;
-  font-weight: 500;
-  color: #000;
-  white-space: nowrap;
-}
+  .card-section-title {
+    background: #fff;
+    padding: 10pt 45pt;
+    margin: 0 -45pt;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #8B2B3E;
+    font-weight: 700;
+    font-size: 14pt;
+  }
 
-.card-value-ar {
-  direction: rtl;
-  text-align: right;
-}
+  .card-section-body {
+    background: #f3f4f6;
+    padding: 25pt 45pt;
+    margin: 0 -45pt;
+  }
 
-.card-value-en {
-  direction: ltr;
-  text-align: left;
-}
+  .card-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 40px;
+  }
 
-.card-ltr {
-  direction: ltr;
-  font-family: "Roboto";
-}
+  .card-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8pt;
+    font-size: 11pt;
+    line-height: 1.7;
+  }
 
-.card-footer {
-  position: absolute;
-  bottom: 45pt;
-  left: 45pt;
-  right: 45pt;
-  display: flex;
-  justify-content: space-between;
-  font-size: 8pt;
-  line-height: 1.6;
-  color: #333;
-  z-index: 2;
-}
+  .card-label {
+    flex: 0 0 130px;   /* عرض ثابت للعنوان */
+    color: #707070;
+    font-weight: 400;
+    white-space: nowrap;
+  }
 
-.card-footer div {
-  width: 48%;
-}
+  .card-value {
+    flex: 1;
+    color: #000;
+    font-weight: 500;
 
-/* إضافة صورة خلفية البطاقة */
-.card-bg-placeholder {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #f8f8f8;
-  z-index: 0;
-}
+    /* الحل الجوهري */
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+
+  .card-value-ar {
+    direction: rtl;
+    text-align: right;
+  }
+
+  .card-value-en {
+    direction: ltr;
+    text-align: left;
+  }
+
+  .card-ltr {
+    direction: ltr;
+    font-family: "Roboto";
+  }
+
+  .card-footer {
+    position: absolute;
+    bottom: 45pt;
+    left: 45pt;
+    right: 45pt;
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+    line-height: 1.6;
+    color: #333;
+    z-index: 2;
+  }
+
+  .card-footer div {
+    width: 48%;
+  }
+
+  /* إضافة صورة خلفية البطاقة */
+  .card-bg-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f8f8;
+    z-index: 0;
+  }
