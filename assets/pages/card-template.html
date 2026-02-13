@@ -66,7 +66,7 @@
 
           <div class="form-group">
             <label>تاريخ الإصدار</label>
-            <input type="date" id="issue_date" name="issue_date"  />
+            <input type="date" id="issue_date" name="issue_date" />
           </div>
 
           <div class="form-group">
@@ -127,7 +127,6 @@
               type="date"
               id="license_issue_date"
               name="license_issue_date"
-              
             />
           </div>
 
@@ -228,7 +227,7 @@
       let currentVerificationToken = null;
 
       /* ===== توليد تلقائي ===== */
-      
+
       function setAutoDates() {
         const today = new Date();
         const nextYear = new Date(today);
@@ -242,25 +241,25 @@
         document.getElementById("license_expiry_date").value = format(nextYear);
       }
       function addOneYear(dateStr) {
-  const d = new Date(dateStr);
-  if (isNaN(d)) return "";
-  d.setFullYear(d.getFullYear() + 1);
-  return d.toISOString().split("T")[0];
-}
+        const d = new Date(dateStr);
+        if (isNaN(d)) return "";
+        d.setFullYear(d.getFullYear() + 1);
+        return d.toISOString().split("T")[0];
+      }
 
-const issueDate = document.getElementById("issue_date");
-const expiryDate = document.getElementById("expiry_date");
+      const issueDate = document.getElementById("issue_date");
+      const expiryDate = document.getElementById("expiry_date");
 
-issueDate.addEventListener("change", () => {
-  expiryDate.value = addOneYear(issueDate.value);
-});
+      issueDate.addEventListener("change", () => {
+        expiryDate.value = addOneYear(issueDate.value);
+      });
 
-const licenseIssue = document.getElementById("license_issue_date");
-const licenseExpiry = document.getElementById("license_expiry_date");
+      const licenseIssue = document.getElementById("license_issue_date");
+      const licenseExpiry = document.getElementById("license_expiry_date");
 
-licenseIssue.addEventListener("change", () => {
-  licenseExpiry.value = addOneYear(licenseIssue.value);
-});
+      licenseIssue.addEventListener("change", () => {
+        licenseExpiry.value = addOneYear(licenseIssue.value);
+      });
 
       function buildVerificationURL(token) {
         return `http://localhost/driver_cards/verify.html?token=${token}`;
@@ -478,7 +477,7 @@ licenseIssue.addEventListener("change", () => {
                     <div class="card-row"><span class="card-label">تصنيف البطاقة:</span><span class="card-value card-value-ar">${data.card_category_ar}</span></div>
                   </div>
                   <div class="card-ltr">
-                    <div class="card-row"><span class="card-label">Driver Card Number:</span><span class="card-value card-value-en">${data.driver_card_number}</span></div>
+                    <div class="card-row"><span class="card-label">Driver Card Number:</span><span class="card-value card-value-en">${data.card_number}</span></div>
                     <div class="card-row"><span class="card-label">Driver Name:</span><span class="card-value card-value-en">${data.driver_name_en}</span></div>
                     <div class="card-row"><span class="card-label">Driver Id:</span><span class="card-value card-value-en">${data.driver_id}</span></div>
                     <div class="card-row"><span class="card-label">Issue Date:</span><span class="card-value card-value-en">${data.issue_date}</span></div>

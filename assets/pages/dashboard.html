@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
@@ -21,7 +21,6 @@
     />
 
     <link rel="stylesheet" href="../css/dashboard.css" />
-
   </head>
   <body id="dashboard-page">
     <!-- Mobile Overlay -->
@@ -62,7 +61,9 @@
         </li>
         <li
           class="nav-item external-link"
-          onclick="window.location.href = '/Naql/assets/pages/card-template.html'"
+          onclick="
+            window.location.href = '/Naql/assets/pages/card-template.html'
+          "
         >
           <i class="fas fa-external-link-alt"></i>
           <span>إصدار بطاقة جديدة</span>
@@ -258,7 +259,6 @@
               <option value="3">محرر (Editor)</option>
               <option value="4">مشاهد (Viewer)</option>
             </select>
-            
           </div>
         </div>
         <div class="modal-footer">
@@ -272,57 +272,61 @@
       </div>
     </div>
     <!-- Card Modal -->
-<div class="modal-overlay" id="cardModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title" id="cardModalTitle">تفاصيل البطاقة</div>
-      <button class="modal-close" onclick="closeCardModal()">&times;</button>
+    <div class="modal-overlay" id="cardModal">
+      <div class="modal">
+        <div class="modal-header">
+          <div class="modal-title" id="cardModalTitle">تفاصيل البطاقة</div>
+          <button class="modal-close" onclick="closeCardModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editCardId" />
+          <div class="input-group">
+            <label class="form-label">رقم البطاقة</label>
+            <input type="text" class="form-control" id="cardNumber" />
+          </div>
+          <div class="input-group">
+            <label class="form-label">اسم السائق (عربي)</label>
+            <input type="text" class="form-control" id="driverNameAr" />
+          </div>
+          <div class="input-group">
+            <label class="form-label">اسم السائق (إنجليزي)</label>
+            <input type="text" class="form-control" id="driverNameEn" />
+          </div>
+          <div class="input-group">
+            <label class="form-label">ID السائق</label>
+            <input type="text" class="form-control" id="driverId" />
+          </div>
+          <div class="input-group">
+            <label class="form-label">تاريخ الإصدار</label>
+            <input type="date" class="form-control" id="issueDate" />
+          </div>
+          <div class="input-group">
+            <label class="form-label">تاريخ الانتهاء</label>
+            <input type="date" class="form-control" id="expiryDate" />
+          </div>
+          <div class="input-group">
+            <label class="form-label">رقم الرخصة</label>
+            <input type="text" class="form-control" id="licenseNumber" />
+          </div>
+          <div class="input-group">
+            <label class="form-label">اسم الشركة (عربي)</label>
+            <input type="text" class="form-control" id="companyNameAr" />
+          </div>
+          <div class="input-group">
+            <label class="form-label">اسم الشركة (إنجليزي)</label>
+            <input type="text" class="form-control" id="companyNameEn" />
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" onclick="closeCardModal()">
+            إلغاء
+          </button>
+          <button class="btn btn-primary" onclick="saveCard()">حفظ</button>
+        </div>
+      </div>
     </div>
-    <div class="modal-body">
-      <input type="hidden" id="editCardId" />
-      <div class="input-group">
-        <label class="form-label">رقم البطاقة</label>
-        <input type="text" class="form-control" id="cardNumber" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">اسم السائق (عربي)</label>
-        <input type="text" class="form-control" id="driverNameAr" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">اسم السائق (إنجليزي)</label>
-        <input type="text" class="form-control" id="driverNameEn" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">ID السائق</label>
-        <input type="text" class="form-control" id="driverId" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">تاريخ الإصدار</label>
-        <input type="date" class="form-control" id="issueDate" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">تاريخ الانتهاء</label>
-        <input type="date" class="form-control" id="expiryDate" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">رقم الرخصة</label>
-        <input type="text" class="form-control" id="licenseNumber" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">اسم الشركة (عربي)</label>
-        <input type="text" class="form-control" id="companyNameAr" />
-      </div>
-      <div class="input-group">
-        <label class="form-label">اسم الشركة (إنجليزي)</label>
-        <input type="text" class="form-control" id="companyNameEn" />
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeCardModal()">إلغاء</button>
-      <button class="btn btn-primary" onclick="saveCard()">حفظ</button>
-    </div>
-  </div>
-</div>
 
     <script>
       // ==========================================
@@ -352,7 +356,8 @@
       // 🔒 التحقق من التوكن عند تحميل الصفحة
       document.addEventListener("DOMContentLoaded", () => {
         if (!token) {
-          window.location.href = "index.html";
+          window.location.href = "../../index.html";
+
           return;
         }
 
@@ -539,7 +544,7 @@
         </div>
       </td>
     </tr>
-  `
+  `,
           )
           .join("");
       }
@@ -703,7 +708,7 @@
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "application/json",
               },
-            }
+            },
           );
 
           const result = await response.json();
@@ -792,7 +797,7 @@
             showToast(
               "success",
               "تم الحفظ",
-              isEdit ? "تم تحديث البطاقة" : "تم إنشاء البطاقة بنجاح"
+              isEdit ? "تم تحديث البطاقة" : "تم إنشاء البطاقة بنجاح",
             );
             closeCardModal();
             fetchCards();
@@ -854,7 +859,7 @@
           return showToast(
             "error",
             "خطأ",
-            "يرجى إدخال كلمة المرور للمستخدم الجديد"
+            "يرجى إدخال كلمة المرور للمستخدم الجديد",
           );
 
         const bodyData = {
@@ -883,7 +888,7 @@
             showToast(
               "success",
               "تم الحفظ",
-              editId ? "تم تحديث بيانات المستخدم" : "تم إضافة المستخدم بنجاح"
+              editId ? "تم تحديث بيانات المستخدم" : "تم إضافة المستخدم بنجاح",
             );
             closeModal();
             fetchUsers();
@@ -1014,7 +1019,7 @@
               .querySelector(".badge")
               ?.textContent.includes(
                 appData.statuses.find((s) => s.status_id == statusFilter)
-                  ?.name || ""
+                  ?.name || "",
               );
 
           row.style.display = textMatch && statusMatch ? "" : "none";
@@ -1111,18 +1116,19 @@
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-            }
+            },
           });
 
           const result = await response.json();
 
           if (result.success) {
-            showToast(
-              "success",
-              "تم تسجيل الخروج",result.message
-            );
+            showToast("success", "تم تسجيل الخروج", result.message);
+            setTimeout(() => {
+              window.location.href = "../../index.html";
+
+            }, 800);
+          }
         }
-      }
       }
 
       function showNotifications() {
@@ -1161,9 +1167,8 @@
 
         const title = titles[tabId];
         if (title) {
-          document.getElementById(
-            "pageTitle"
-          ).innerHTML = `<i class="fas ${title.icon}"></i> ${title.text}`;
+          document.getElementById("pageTitle").innerHTML =
+            `<i class="fas ${title.icon}"></i> ${title.text}`;
         }
 
         if (window.innerWidth <= 768) toggleSidebar(false);
