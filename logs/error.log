@@ -10,3 +10,4 @@ SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using passw
 [12-Feb-2026 19:18:55 UTC] Error: Undefined array key "	license_number" in D:\laragon\www\driver_cards\models\verify_templates\verify.php on line 248
 [12-Feb-2026 19:18:55 UTC] PHP Warning:  http_response_code(): Cannot set response code - headers already sent (output started at D:\laragon\www\driver_cards\models\verify_templates\verify.php:38) in D:\laragon\www\driver_cards\index.php on line 21
 [12-Feb-2026 19:18:55 UTC] {"type":2,"message":"http_response_code(): Cannot set response code - headers already sent (output started at D:\\laragon\\www\\driver_cards\\models\\verify_templates\\verify.php:38)","file":"D:\\laragon\\www\\driver_cards\\index.php","line":21}
+SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused itSQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it

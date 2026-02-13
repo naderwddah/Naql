@@ -42,7 +42,25 @@ class Card {
             throw $e;
         }
     }
-
+    function generateUniqueNumber($pdo, $length = 10)
+    {
+        do {
+            // توليد رقم عشوائي بطول محدد
+            $number = '';
+            for ($i = 0; $i < $length; $i++) {
+                $number .= random_int(0, 9);
+            }
+    
+            // التحقق هل الرقم موجود مسبقًا
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM card_details WHERE moi_number = ?");
+            $stmt->execute([$number]);
+            $exists = $stmt->fetchColumn();
+    
+        } while ($exists);
+    
+        return $number;
+    }
+    
     /**
      * إنشاء بطاقة جديدة بكل تفاصيلها
      * @param array $data بيانات البطاقة
@@ -119,7 +137,7 @@ class Card {
                 'activity_type_en' => $data['activity_type_en'] ?? null,
                 
                 // معلومات الشركة
-                'moi_number' => $data['moi_number'] ?? null,
+                'moi_number' => $data['moi_number'] ?? $this->generateUniqueNumber($this->pdo),
                 'company_name_ar' => $data['company_name_ar'] ?? null,
                 'company_name_en' => $data['company_name_en'] ?? null
             ]);

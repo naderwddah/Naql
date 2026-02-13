@@ -119,8 +119,6 @@ switch ($path) {
     // الصلاحيات
     // ----------------------------
     case 'roles':
-        Response::error("الوضوضيفه غير مفعله حاليا (ممزة مستقبلية)", 405);
-        break;
         $controller = new RolesController($pdo, $authUser);
         $data = json_decode(file_get_contents('php://input'), true);
         
@@ -137,8 +135,6 @@ switch ($path) {
     // حالات البطاقات
     // ----------------------------
     case 'statuses':
-        Response::error("الوضوضيفه غير مفعله حاليا (ممزة مستقبلية)", 405);
-        break;
         $controller = new StatusController($pdo, $authUser);
         $data = json_decode(file_get_contents('php://input'), true);
         

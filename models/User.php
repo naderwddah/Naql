@@ -23,12 +23,12 @@ class User {
     public function create($username, $password, $fullName, $role_id = 4) {
         // التحقق من صحة اسم المستخدم
         if (strlen($username) < 3) {
-            Response::error("Username must be at least 3 characters", 400);
+            Response::error("اسم المستخدم يجب ألايقل عن 3 حروف", 400);
         }
         
         // التحقق من صحة كلمة المرور
-        if (strlen($password) < 6) {
-            Response::error("Password must be at least 6 characters", 400);
+        if (strlen($password) <= 4) {
+            Response::error("كلمه المرور يجب ان تكون اكبر من 4 حروف", 400);
         }
         
         // تشفير كلمة المرور
@@ -79,17 +79,17 @@ class User {
     
         // المستخدم غير موجود
         if (!$user) {
-            Response::error("Invalid credentials", 401);
+            Response::error("المستخدم غير موجود", 401);
         }
     
         // المستخدم غير نشط
         if (!$user['is_active']) {
-            Response::error("Account is disabled", 403);
+            Response::error("الحساب غير مفعل", 403);
         }
     
         // التحقق من كلمة المرور كنص مباشر
         if (trim($password) !== trim($user['password_hash'])) {
-            Response::error("Invalid credentials", 401);
+            Response::error("خطا في اسم المستخدم او كلمه المرور", 401);
         }
     
         return $user;
