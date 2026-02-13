@@ -1,367 +1,453 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>نموذج إدخال بيانات بطاقة السائق</title>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نموذج إدخال بيانات بطاقة السائق</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Roboto:wght@400;500;700&display=swap"
-    rel="stylesheet">
+    <!-- إضافة مكتبات jsPDF و html2canvas -->
+    <script src="../js/jspdf.umd.min.js"></script>
+    <script src="../js/html2canvas.min.js"></script>
+    <script src="../js/qrcode.min.js"></script>
+    <link rel="stylesheet" href="../css/card-template.css" />
+  </head>
 
-  <!-- إضافة مكتبات jsPDF و html2canvas -->
-  <script src="../js/jspdf.umd.min.js"></script>
-  <script src="../js/html2canvas.min.js"></script>
-  <script src="../js/qrcode.min.js"></script>
-  <link rel="stylesheet" href="../css/card-template.css">
-</head>
+  <body>
+    <div class="container">
+      <h2 class="page-title">إدخال بيانات بطاقة السائق</h2>
 
-<body>
+      <form id="driverCardForm">
+        <!-- بيانات السائق -->
+        <div class="section-title">
+          🧾 بيانات بطاقة السائق (Driver Card Info)
+        </div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>رقم بطاقة السائق (Driver Card Number)</label>
+            <input
+              type="text"
+              id="driver_card_number"
+              name="driver_card_number"
+              readonly
+              required
+            />
+          </div>
 
-  <div class="container">
-    <h2 class="page-title">إدخال بيانات بطاقة السائق</h2>
+          <div class="form-group">
+            <label>اسم السائق (عربي)</label>
+            <input
+              type="text"
+              name="driver_name_ar"
+              onchange="changed()"
+              onblur="translateTextToField(this.value, 'driver_name_en')"
+              required
+            />
+          </div>
 
-    <form id="driverCardForm">
+          <div class="form-group">
+            <label>اسم السائق (إنجليزي)</label>
+            <input
+              type="text"
+              name="driver_name_en"
+              class="en-input"
+              required
+            />
+          </div>
 
-      <!-- بيانات السائق -->
-      <div class="section-title">🧾 بيانات بطاقة السائق (Driver Card Info)</div>
-      <div class="form-grid">
+          <div class="form-group full-width">
+            <label>رقم هوية السائق</label>
+            <input type="number" name="driver_id" required />
+          </div>
 
-        <div class="form-group full-width">
-          <label>رقم بطاقة السائق (Driver Card Number)</label>
-          <input type="text" id="driver_card_number" name="driver_card_number" readonly required>
+          <div class="form-group">
+            <label>تاريخ الإصدار</label>
+            <input type="date" id="issue_date" name="issue_date"  />
+          </div>
+
+          <div class="form-group">
+            <label>تاريخ الانتهاء</label>
+            <input type="date" id="expiry_date" name="expiry_date" readonly />
+          </div>
+
+          <div class="form-group full-width">
+            <label>تصنيف البطاقة</label>
+            <input type="text" value="سنوي / Annual" readonly />
+          </div>
         </div>
 
-        <div class="form-group">
-          <label>اسم السائق (عربي)</label>
-          <input type="text" name="driver_name_ar" onchange="changed()"
-            onblur="translateTextToField(this.value,'driver_name_en')" required>
+        <!-- QR -->
+        <div class="qr-preview-container">
+          <label>معاينة رمز QR</label>
+          <img
+            id="qr_preview_img"
+            class="qr-preview-img"
+            style="display: none"
+          />
+          <span id="qr_placeholder">سيتم توليد QR تلقائيًا</span>
+          <input type="hidden" id="qr_image_url" name="qr_image_url" />
         </div>
 
-        <div class="form-group">
-          <label>اسم السائق (إنجليزي)</label>
-          <input type="text" name="driver_name_en" class="en-input" required>
+        <!-- بيانات المنشأة -->
+        <div class="section-title">🏢 بيانات المنشأة والترخيص</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>رقم الترخيص</label>
+            <input type="text" id="license_number" name="license_number" />
+          </div>
+
+          <div class="form-group">
+            <label>مدينة الترخيص (عربي)</label>
+            <input
+              type="text"
+              name="license_city_ar"
+              onchange="changed()"
+              onblur="translateTextToField(this.value, 'license_city_en')"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>مدينة الترخيص (إنجليزي)</label>
+            <input
+              type="text"
+              name="license_city_en"
+              class="en-input"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label>تاريخ إصدار الترخيص</label>
+            <input
+              type="date"
+              id="license_issue_date"
+              name="license_issue_date"
+              
+            />
+          </div>
+
+          <div class="form-group">
+            <label>تاريخ انتهاء الترخيص</label>
+            <input
+              type="date"
+              id="license_expiry_date"
+              name="license_expiry_date"
+              readonly
+            />
+          </div>
+
+          <div class="form-group full-width">
+            <label>نوع النشاط (عربي)</label>
+            <input
+              type="text"
+              name="activity_type_ar"
+              onchange="changed()"
+              onblur="translateTextToField(this.value, 'activity_type_en')"
+              required
+            />
+          </div>
+
+          <div class="form-group full-width">
+            <label>نوع النشاط (إنجليزي)</label>
+            <input
+              type="text"
+              name="activity_type_en"
+              class="en-input"
+              required
+            />
+          </div>
+
+          <div class="form-group full-width">
+            <label>اسم المنشأة (عربي)</label>
+            <input
+              type="text"
+              name="company_name_ar"
+              onchange="changed()"
+              onblur="translateTextToField(this.value, 'company_name_en')"
+              required
+            />
+          </div>
+
+          <div class="form-group full-width">
+            <label>اسم المنشأة (إنجليزي)</label>
+            <input
+              type="text"
+              name="company_name_en"
+              class="en-input"
+              required
+            />
+          </div>
         </div>
 
-        <div class="form-group full-width">
-          <label>رقم هوية السائق</label>
-          <input type="number" name="driver_id" required>
+        <!-- الأزرار -->
+        <div class="actions">
+          <button type="button" class="btn btn-preview" onclick="openPreview()">
+            معاينة التصميم (Preview)
+          </button>
+          <button
+            type="button"
+            class="btn btn-submit"
+            onclick="handleFormSubmit()"
+          >
+            طباعة / حفظ PDF (Print)
+          </button>
         </div>
-
-        <div class="form-group">
-          <label>تاريخ الإصدار</label>
-          <input type="date" id="issue_date" name="issue_date" readonly>
-        </div>
-
-        <div class="form-group">
-          <label>تاريخ الانتهاء</label>
-          <input type="date" id="expiry_date" name="expiry_date" readonly>
-        </div>
-
-        <div class="form-group full-width">
-          <label>تصنيف البطاقة</label>
-          <input type="text" value="سنوي / Annual" readonly>
-        </div>
-
-      </div>
-
-      <!-- QR -->
-      <div class="qr-preview-container">
-        <label>معاينة رمز QR</label>
-        <img id="qr_preview_img" class="qr-preview-img" style="display:none;">
-        <span id="qr_placeholder">سيتم توليد QR تلقائيًا</span>
-        <input type="hidden" id="qr_image_url" name="qr_image_url">
-      </div>
-
-      <!-- بيانات المنشأة -->
-      <div class="section-title">🏢 بيانات المنشأة والترخيص</div>
-      <div class="form-grid">
-
-        <div class="form-group">
-          <label>رقم الترخيص</label>
-          <input type="text" id="license_number" name="license_number">
-        </div>
-
-        <div class="form-group">
-          <label>مدينة الترخيص (عربي)</label>
-          <input type="text" name="license_city_ar" onchange="changed()"
-            onblur="translateTextToField(this.value,'license_city_en')" required>
-        </div>
-
-        <div class="form-group">
-          <label>مدينة الترخيص (إنجليزي)</label>
-          <input type="text" name="license_city_en" class="en-input" required>
-        </div>
-
-        <div class="form-group">
-          <label>تاريخ إصدار الترخيص</label>
-          <input type="date" id="license_issue_date" name="license_issue_date" readonly>
-        </div>
-
-        <div class="form-group">
-          <label>تاريخ انتهاء الترخيص</label>
-          <input type="date" id="license_expiry_date" name="license_expiry_date" readonly>
-        </div>
-
-        <div class="form-group full-width">
-          <label>نوع النشاط (عربي)</label>
-          <input type="text" name="activity_type_ar" onchange="changed()"
-            onblur="translateTextToField(this.value,'activity_type_en')" required>
-        </div>
-
-        <div class="form-group full-width">
-          <label>نوع النشاط (إنجليزي)</label>
-          <input type="text" name="activity_type_en" class="en-input" required>
-        </div>
-
-        <div class="form-group full-width">
-          <label>اسم المنشأة (عربي)</label>
-          <input type="text" name="company_name_ar" onchange="changed()"
-            onblur="translateTextToField(this.value,'company_name_en')" required>
-        </div>
-
-        <div class="form-group full-width">
-          <label>اسم المنشأة (إنجليزي)</label>
-          <input type="text" name="company_name_en" class="en-input" required>
-        </div>
-
-      </div>
-
-      <!-- الأزرار -->
-      <div class="actions">
-        <button type="button" class="btn btn-preview" onclick="openPreview()">معاينة التصميم (Preview)</button>
-        <button type="button" class="btn btn-submit" onclick="handleFormSubmit()">طباعة / حفظ PDF (Print)</button>
-      </div>
-
-    </form>
-  </div>
-
-
-
-
-  <div id="previewModal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal" onclick="closePreview()">&times;</span>
-      <h3>معاينة البطاقة قبل الطباعة</h3>
-      <div id="previewArea" class="preview-container">
-        <!-- سيتم وضع HTML البطاقة هنا -->
-      </div>
-      <button class="btn btn-submit" style="margin-top:20px;" onclick="confirmAndPrint()">تأكيد وتنزيل PDF</button>
+      </form>
     </div>
-  </div>
 
-  <script>
+    <div id="previewModal" class="modal">
+      <div class="modal-content">
+        <span class="close-modal" onclick="closePreview()">&times;</span>
+        <h3>معاينة البطاقة قبل الطباعة</h3>
+        <div id="previewArea" class="preview-container">
+          <!-- سيتم وضع HTML البطاقة هنا -->
+        </div>
+        <button
+          class="btn btn-submit"
+          style="margin-top: 20px"
+          onclick="confirmAndPrint()"
+        >
+          تأكيد وتنزيل PDF
+        </button>
+      </div>
+    </div>
 
-    /* ===== أدوات ===== */
-    function randomDigits(len) {
-      return Math.floor(Math.random() * Math.pow(10, len))
-        .toString()
-        .padStart(len, '0');
-    }
-
-    let currentVerificationToken = null;
-
-    /* ===== توليد تلقائي ===== */
-    function setAutoDates() {
-      const today = new Date();
-      const nextYear = new Date(today);
-      nextYear.setFullYear(today.getFullYear() + 1);
-
-      const format = d => d.toISOString().split('T')[0];
-
-      document.getElementById('issue_date').value = format(today);
-      document.getElementById('expiry_date').value = format(nextYear);
-      document.getElementById('license_issue_date').value = format(today);
-      document.getElementById('license_expiry_date').value = format(nextYear);
-    }
-    function buildVerificationURL(token) {
-      return `http://localhost/driver_cards/verify.html?token=${token}`;
-    }
-    /* ===== توليد QR ===== */
-
-    function generateQR(url) {
-      const img = document.getElementById("qr_preview_img");
-      const placeholder = document.getElementById("qr_placeholder");
-      const hidden = document.getElementById("qr_image_url");
-
-      if (!img) {
-        console.error("QR preview image element not found");
-        return;
+    <script>
+      /* ===== أدوات ===== */
+      function randomDigits(len) {
+        return Math.floor(Math.random() * Math.pow(10, len))
+          .toString()
+          .padStart(len, "0");
       }
 
-      // توليد QR باستخدام مكتبة QRCode على canvas مؤقت
-      const tempDiv = document.createElement("div");
-      new QRCode(tempDiv, {
-        text: url,
-        width: 150,
-        height: 150
-      });
+      let currentVerificationToken = null;
 
-      // انتظر قليلاً حتى يتم إنشاء canvas
-      setTimeout(() => {
-        const canvas = tempDiv.querySelector("canvas");
-        if (!canvas) {
-          console.error("QR canvas not generated");
+      /* ===== توليد تلقائي ===== */
+      
+      function setAutoDates() {
+        const today = new Date();
+        const nextYear = new Date(today);
+        nextYear.setFullYear(today.getFullYear() + 1);
+
+        const format = (d) => d.toISOString().split("T")[0];
+
+        document.getElementById("issue_date").value = format(today);
+        document.getElementById("expiry_date").value = format(nextYear);
+        document.getElementById("license_issue_date").value = format(today);
+        document.getElementById("license_expiry_date").value = format(nextYear);
+      }
+      function addOneYear(dateStr) {
+  const d = new Date(dateStr);
+  if (isNaN(d)) return "";
+  d.setFullYear(d.getFullYear() + 1);
+  return d.toISOString().split("T")[0];
+}
+
+const issueDate = document.getElementById("issue_date");
+const expiryDate = document.getElementById("expiry_date");
+
+issueDate.addEventListener("change", () => {
+  expiryDate.value = addOneYear(issueDate.value);
+});
+
+const licenseIssue = document.getElementById("license_issue_date");
+const licenseExpiry = document.getElementById("license_expiry_date");
+
+licenseIssue.addEventListener("change", () => {
+  licenseExpiry.value = addOneYear(licenseIssue.value);
+});
+
+      function buildVerificationURL(token) {
+        return `http://localhost/driver_cards/verify.html?token=${token}`;
+      }
+      /* ===== توليد QR ===== */
+
+      function generateQR(url) {
+        const img = document.getElementById("qr_preview_img");
+        const placeholder = document.getElementById("qr_placeholder");
+        const hidden = document.getElementById("qr_image_url");
+
+        if (!img) {
+          console.error("QR preview image element not found");
           return;
         }
 
-        const base64 = canvas.toDataURL("image/png");
+        // توليد QR باستخدام مكتبة QRCode على canvas مؤقت
+        const tempDiv = document.createElement("div");
+        new QRCode(tempDiv, {
+          text: url,
+          width: 150,
+          height: 150,
+        });
 
-        // عرض الصورة
-        img.src = base64;
-        img.style.display = "block";
+        // انتظر قليلاً حتى يتم إنشاء canvas
+        setTimeout(() => {
+          const canvas = tempDiv.querySelector("canvas");
+          if (!canvas) {
+            console.error("QR canvas not generated");
+            return;
+          }
 
-        // إخفاء placeholder
-        if (placeholder) {
-          placeholder.style.display = "none";
+          const base64 = canvas.toDataURL("image/png");
+
+          // عرض الصورة
+          img.src = base64;
+          img.style.display = "block";
+
+          // إخفاء placeholder
+          if (placeholder) {
+            placeholder.style.display = "none";
+          }
+
+          // تخزين الصورة في hidden input
+          if (hidden) {
+            hidden.value = base64;
+          }
+        }, 100);
+      }
+
+      function generateToken() {
+        const array = new Uint8Array(32);
+        crypto.getRandomValues(array);
+
+        return Array.from(array)
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+      }
+
+      const API_BASE_URL = "http://localhost/driver_cards/v1";
+
+      async function apiRequest(endpoint, method = "GET", data = null) {
+        const token =
+          localStorage.getItem("authToken") ||
+          sessionStorage.getItem("authToken");
+
+        const headers = {
+          "Content-Type": "application/json",
+        };
+
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
         }
 
-        // تخزين الصورة في hidden input
-        if (hidden) {
-          hidden.value = base64;
-        }
-      }, 100);
-    }
+        const options = {
+          method,
+          headers,
+        };
 
-
-    function generateToken() {
-      const array = new Uint8Array(32);
-      crypto.getRandomValues(array);
-
-      return Array.from(array)
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-    }
-
-
-    const API_BASE_URL = "http://localhost/driver_cards/v1";
-
-    async function apiRequest(endpoint, method = "GET", data = null) {
-
-      const token =
-        localStorage.getItem("authToken") ||
-        sessionStorage.getItem("authToken");
-
-      const headers = {
-        "Content-Type": "application/json",
-      };
-
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
-      }
-
-      const options = {
-        method,
-        headers
-      };
-
-      if (data && method !== "GET") {
-        options.body = JSON.stringify(data);
-      }
-
-      const response = await fetch(`${API_BASE_URL}/${endpoint}`, options);
-
-      // معالجة خطأ HTTP
-      if (!response.ok) {
-
-        if (response.status === 401) {
-          alert("انتهت الجلسة، يرجى تسجيل الدخول مجدداً");
-          window.location.href = "/login.html";
+        if (data && method !== "GET") {
+          options.body = JSON.stringify(data);
         }
 
-        const errorText = await response.text();
-        throw new Error(errorText || "Request failed");
+        const response = await fetch(`${API_BASE_URL}/${endpoint}`, options);
+
+        // معالجة خطأ HTTP
+        if (!response.ok) {
+          if (response.status === 401) {
+            alert("انتهت الجلسة، يرجى تسجيل الدخول مجدداً");
+            window.location.href = "/login.html";
+          }
+
+          const errorText = await response.text();
+          throw new Error(errorText || "Request failed");
+        }
+
+        return await response.json();
       }
 
-      return await response.json();
-    }
+      window.addEventListener("DOMContentLoaded", initPage);
 
+      async function initPage() {
+        try {
+          // 1️⃣ جلب رقم البطاقة من السيرفر
+          const response = await apiRequest(
+            "cards&get_card_number=get_card_number",
+            "GET",
+          );
+          // console.log(response);
+          const cardNumber = response.card_number;
 
-    window.addEventListener('DOMContentLoaded', initPage);
+          document.getElementById("driver_card_number").value = cardNumber;
 
-    async function initPage() {
-      try {
-        // 1️⃣ جلب رقم البطاقة من السيرفر
-        const response = await apiRequest('cards&get_card_number=get_card_number', 'GET');
-        // console.log(response);
-        const cardNumber = response.card_number;
+          // توليد QR بناءً على الرقم القادم من السيرفر
+          generateQR(cardNumber);
 
-        document.getElementById('driver_card_number').value = cardNumber;
+          // 1️⃣ توليد token
+          currentVerificationToken = generateToken();
 
-        // توليد QR بناءً على الرقم القادم من السيرفر
-        generateQR(cardNumber);
+          // 2️⃣ بناء رابط التحقق
+          const verificationURL = buildVerificationURL(
+            currentVerificationToken,
+          );
 
-        // 1️⃣ توليد token
-        currentVerificationToken = generateToken();
-
-        // 2️⃣ بناء رابط التحقق
-        const verificationURL = buildVerificationURL(currentVerificationToken);
-
-        // 3️⃣ توليد QR للرابط
-        generateQR(verificationURL);
-        // 2️⃣ باقي القيم التلقائية (تواريخ فقط)
-        setAutoDates();
-
-      } catch (err) {
-        console.error(err);
-        alert("فشل تحميل رقم البطاقة من السيرفر");
-      }
-    }
-
-
-    /* ===== الترجمة ===== */
-    let change = false;
-    function changed() { change = true; }
-
-    async function translateTextToField(arText, enFieldName) {
-      if (!change || !arText.trim()) return;
-
-      try {
-        const res = await fetch(
-          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(arText)}&langpair=ar|en`
-        );
-        const data = await res.json();
-        document.querySelector(`[name="${enFieldName}"]`).value =
-          data.responseData.translatedText;
-      } catch {
-        alert('فشل في الترجمة');
-      }
-      change = false;
-    }
-
-
-    // !------------------------------------
-    // دالة فتح المعاينة
-    function openPreview() {
-      const form = document.getElementById('driverCardForm');
-      if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
+          // 3️⃣ توليد QR للرابط
+          generateQR(verificationURL);
+          // 2️⃣ باقي القيم التلقائية (تواريخ فقط)
+          setAutoDates();
+        } catch (err) {
+          console.error(err);
+          alert("فشل تحميل رقم البطاقة من السيرفر");
+        }
       }
 
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+      /* ===== الترجمة ===== */
+      let change = false;
+      function changed() {
+        change = true;
+      }
 
-      // إنشاء HTML البطاقة مباشرة في المتصفح
-      const cardHTML = generateCardHTML(data);
-      document.getElementById('previewArea').innerHTML = cardHTML;
-      document.getElementById('previewModal').style.display = 'flex';
-    }
+      async function translateTextToField(arText, enFieldName) {
+        if (!change || !arText.trim()) return;
 
-    function closePreview() {
-      document.getElementById('previewModal').style.display = 'none';
-    }
+        try {
+          const res = await fetch(
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(arText)}&langpair=ar|en`,
+          );
+          const data = await res.json();
+          document.querySelector(`[name="${enFieldName}"]`).value =
+            data.responseData.translatedText;
+        } catch {
+          alert("فشل في الترجمة");
+        }
+        change = false;
+      }
 
-    // التأكيد وتنزيل PDF من داخل المعاينة
-    function confirmAndPrint() {
-      closePreview();
-      handleFormSubmit();
-    }
+      // !------------------------------------
+      // دالة فتح المعاينة
+      function openPreview() {
+        const form = document.getElementById("driverCardForm");
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
 
-    // دالة لإنشاء HTML البطاقة
-    function generateCardHTML(data) {
-      return `
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        // إنشاء HTML البطاقة مباشرة في المتصفح
+        const cardHTML = generateCardHTML(data);
+        document.getElementById("previewArea").innerHTML = cardHTML;
+        document.getElementById("previewModal").style.display = "flex";
+      }
+
+      function closePreview() {
+        document.getElementById("previewModal").style.display = "none";
+      }
+
+      // التأكيد وتنزيل PDF من داخل المعاينة
+      function confirmAndPrint() {
+        closePreview();
+        handleFormSubmit();
+      }
+
+      // دالة لإنشاء HTML البطاقة
+      function generateCardHTML(data) {
+        return `
       <div class="pdf-scope">
         <div class="card-preview" id="cardToPrint">
           <div class="card-bg-placeholder"></div>
@@ -417,7 +503,7 @@
                     <div class="card-row"><span class="card-label">تاريخ الإصدار:</span><span class="card-value card-value-ar">${data.license_issue_date}</span></div>
                     <div class="card-row"><span class="card-label">تاريخ الانتهاء:</span><span class="card-value card-value-ar">${data.license_expiry_date}</span></div>
                     <div class="card-row"><span class="card-label">نوع النشاط:</span><span class="card-value card-value-ar">${data.activity_type_ar}</span></div>
-                    <div class="card-row"><span class="card-label">رقم هوية المنشأة:</span><span class="card-value card-value-ar">${data.moi_number??data.license_number}</span></div>
+                    <div class="card-row"><span class="card-label">رقم هوية المنشأة:</span><span class="card-value card-value-ar">${data.moi_number ?? data.license_number}</span></div>
                     <div class="card-row"><span class="card-label">اسم المنشأة:</span><span class="card-value card-value-ar">${data.company_name_ar}</span></div>
                   </div>
                   <div class="card-ltr">
@@ -453,120 +539,133 @@
         </div>
         </div>
       `;
-    }
-
-    async function handleFormSubmit() {
-  const form = document.getElementById('driverCardForm');
-  const submitBtn = document.querySelector('.btn-submit');
-  const originalText = submitBtn.textContent;
-
-  submitBtn.textContent = 'جاري المعالجة...';
-  submitBtn.disabled = true;
-
-  try {
-    const formData = new FormData(form);
-    const dataFromForm = Object.fromEntries(formData.entries());
-
-    if (!currentVerificationToken) {
-      alert("لم يتم إنشاء QR بعد");
-      return;
-    }
-
-    // تعبئة البيانات كاملة قبل إرسالها
-    const data = {
-      driver_name_ar: dataFromForm.driver_name_ar || "",
-      driver_name_en: dataFromForm.driver_name_en || "",
-      driver_id: dataFromForm.driver_id || "",
-      card_number: document.getElementById('driver_card_number').value || "",
-      verification_token: currentVerificationToken,
-      company_name_ar: dataFromForm.company_name_ar || "",
-      company_name_en: dataFromForm.company_name_en || "",
-      issue_date: document.getElementById('issue_date').value || "",
-      expiry_date: document.getElementById('expiry_date').value || "",
-      card_category_ar: "سنوي",
-      card_category_en: "Annual",
-      license_number: dataFromForm.license_number || "",
-      license_city_ar: dataFromForm.license_city_ar || "",
-      license_city_en: dataFromForm.license_city_en || "",
-      license_issue_date: document.getElementById('license_issue_date').value || "",
-      license_expiry_date: document.getElementById('license_expiry_date').value || "",
-      activity_type_ar: dataFromForm.activity_type_ar || "",
-      activity_type_en: dataFromForm.activity_type_en || "",
-      moi_number: dataFromForm.moi_number || dataFromForm.license_number || "",
-      qr_image_url: document.getElementById('qr_image_url').value || ""
-    };
-
-    // 1️⃣ إرسال البيانات للسيرفر
-    await apiRequest('cards', 'POST', data);
-    alert("تم حفظ البيانات بنجاح، جاري توليد PDF...");
-
-    // 2️⃣ إنشاء HTML البطاقة مؤقتًا
-    const cardHTML = generateCardHTML(data);
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = cardHTML;
-    tempDiv.style.position = 'fixed';
-    tempDiv.style.left = '-10000px';
-    tempDiv.style.top = '0';
-    document.body.appendChild(tempDiv);
-
-    const cardElement = tempDiv.querySelector('#cardToPrint');
-
-    // 3️⃣ الانتظار حتى تحميل كل الصور (خاصة QR وصورة الخلفية)
-    await Promise.all(Array.from(cardElement.querySelectorAll('img')).map(img => {
-      if (img.complete) return Promise.resolve();
-      return new Promise(resolve => img.onload = img.onerror = resolve);
-    }));
-
-    // 4️⃣ تحويل HTML إلى Canvas
-    const canvas = await html2canvas(cardElement, {
-      scale: 2.5,
-      useCORS: true,
-      backgroundColor: '#ffffff'
-    });
-
-    document.body.removeChild(tempDiv);
-
-    // 5️⃣ تحويل px إلى mm
-    const pxToMm = px => px * 0.264583;
-    const pdfWidth = pxToMm(canvas.width);
-    const pdfHeight = pxToMm(canvas.height);
-
-    const { jsPDF } = window.jspdf;
-
-    // 6️⃣ إنشاء PDF بنفس حجم البطاقة
-    const pdf = new jsPDF({
-      orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
-      unit: 'mm',
-      format: [pdfWidth, pdfHeight]
-    });
-
-    const imgData = canvas.toDataURL('image/png', 1.0);
-
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
-
-    // 7️⃣ حفظ PDF
-    pdf.save(`driver-card-${data.card_number}.pdf`);
-    alert('تم تحميل البطاقة بنجاح');
-
-  } catch (err) {
-    console.error(err);
-    alert('حدث خطأ أثناء العملية: ' + err.message);
-  } finally {
-    submitBtn.textContent = originalText;
-    submitBtn.disabled = false;
-  }
-}
-
-// إغلاق المودال عند النقر خارجه
-    window.onclick = function (event) {
-      const modal = document.getElementById('previewModal');
-      if (event.target == modal) {
-        modal.style.display = "none";
       }
-    }
 
-  </script>
+      async function handleFormSubmit() {
+        const form = document.getElementById("driverCardForm");
+        const submitBtn = document.querySelector(".btn-submit");
+        const originalText = submitBtn.textContent;
 
-</body>
+        submitBtn.textContent = "جاري المعالجة...";
+        submitBtn.disabled = true;
 
+        try {
+          const formData = new FormData(form);
+          const dataFromForm = Object.fromEntries(formData.entries());
+
+          if (!currentVerificationToken) {
+            alert("لم يتم إنشاء QR بعد");
+            return;
+          }
+
+          // تعبئة البيانات كاملة قبل إرسالها
+          const data = {
+            driver_name_ar: dataFromForm.driver_name_ar || "",
+            driver_name_en: dataFromForm.driver_name_en || "",
+            driver_id: dataFromForm.driver_id || "",
+            card_number:
+              document.getElementById("driver_card_number").value || "",
+            verification_token: currentVerificationToken,
+            company_name_ar: dataFromForm.company_name_ar || "",
+            company_name_en: dataFromForm.company_name_en || "",
+            issue_date: document.getElementById("issue_date").value || "",
+            expiry_date: document.getElementById("expiry_date").value || "",
+            card_category_ar: "سنوي",
+            card_category_en: "Annual",
+            license_number: dataFromForm.license_number || "",
+            license_city_ar: dataFromForm.license_city_ar || "",
+            license_city_en: dataFromForm.license_city_en || "",
+            license_issue_date:
+              document.getElementById("license_issue_date").value || "",
+            license_expiry_date:
+              document.getElementById("license_expiry_date").value || "",
+            activity_type_ar: dataFromForm.activity_type_ar || "",
+            activity_type_en: dataFromForm.activity_type_en || "",
+            moi_number:
+              dataFromForm.moi_number || dataFromForm.license_number || "",
+            qr_image_url: document.getElementById("qr_image_url").value || "",
+          };
+
+          // 1️⃣ إرسال البيانات للسيرفر
+          await apiRequest("cards", "POST", data);
+          alert("تم حفظ البيانات بنجاح، جاري توليد PDF...");
+
+          // 2️⃣ إنشاء HTML البطاقة مؤقتًا
+          const cardHTML = generateCardHTML(data);
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = cardHTML;
+          tempDiv.style.position = "fixed";
+          tempDiv.style.left = "-10000px";
+          tempDiv.style.top = "0";
+          document.body.appendChild(tempDiv);
+
+          const cardElement = tempDiv.querySelector("#cardToPrint");
+
+          // 3️⃣ الانتظار حتى تحميل كل الصور (خاصة QR وصورة الخلفية)
+          await Promise.all(
+            Array.from(cardElement.querySelectorAll("img")).map((img) => {
+              if (img.complete) return Promise.resolve();
+              return new Promise(
+                (resolve) => (img.onload = img.onerror = resolve),
+              );
+            }),
+          );
+
+          // 4️⃣ تحويل HTML إلى Canvas
+          const canvas = await html2canvas(cardElement, {
+            scale: 2.5,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+          });
+
+          document.body.removeChild(tempDiv);
+
+          // 5️⃣ تحويل px إلى mm
+          const pxToMm = (px) => px * 0.264583;
+          const pdfWidth = pxToMm(canvas.width);
+          const pdfHeight = pxToMm(canvas.height);
+
+          const { jsPDF } = window.jspdf;
+
+          // 6️⃣ إنشاء PDF بنفس حجم البطاقة
+          const pdf = new jsPDF({
+            orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
+            unit: "mm",
+            format: [pdfWidth, pdfHeight],
+          });
+
+          const imgData = canvas.toDataURL("image/png", 1.0);
+
+          pdf.addImage(
+            imgData,
+            "PNG",
+            0,
+            0,
+            pdfWidth,
+            pdfHeight,
+            undefined,
+            "FAST",
+          );
+
+          // 7️⃣ حفظ PDF
+          pdf.save(`driver-card-${data.card_number}.pdf`);
+          alert("تم تحميل البطاقة بنجاح");
+        } catch (err) {
+          console.error(err);
+          alert("حدث خطأ أثناء العملية: " + err.message);
+        } finally {
+          submitBtn.textContent = originalText;
+          submitBtn.disabled = false;
+        }
+      }
+
+      // إغلاق المودال عند النقر خارجه
+      window.onclick = function (event) {
+        const modal = document.getElementById("previewModal");
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+  </body>
 </html>
